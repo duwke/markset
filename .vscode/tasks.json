@@ -28,14 +28,13 @@
       }
     },
     {
-      "type": "npm",
-      "script": "build",
-      "group": "build",
-      "problemMatcher": [],
-      "label": "Build: HTML only",
-      "detail": "npm run build",
+      "label": "Flash esc",
+      "type": "shell",
+      "command": ".esptool.py -e --chip esp32 --port /dev/ttyUSB0 write_flash -z 0x1000 esp32spiram-20210902-v1.17.bin",
+      "group": "test",
       "presentation": {
-        "panel": "shared"
+        "reveal": "always",
+        "panel": "new"
       }
     }
   ]
