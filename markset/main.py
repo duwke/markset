@@ -119,8 +119,10 @@ class Status():
         return {'message': 'changed', 'value': data['status']}
 
 class FileSystem():
-    def put(self, data):
-        print("fs put:" + str(data))
+    def post(self, data):
+        
+        print("fs post:" + str(data))
+        return {'result': 'true'}
 
 # RESTAPI: GPIO status
 class GPIOList():
@@ -150,17 +152,10 @@ class GPIO():
         return {'message': 'changed', 'value': val}
 
 if __name__ == '__main__':
-
-    
-
     app.add_resource(Lights, '/api/lights')
-        # Set all pins to OUT mode
-    # for p, d in pins.items():
-    #     machine.Pin(p, machine.Pin.OUT)
-
     app.add_resource(FileSystem, '/api/files')
     app.add_resource(Status, '/api/status')
     app.add_resource(GPIOList, '/api/gpio')
     app.add_resource(GPIO, '/api/gpio/<pin>')
     print("webserver starting")
-    app.run(host='10.0.0.96', port=80)
+    app.run(host='0.0.0.0', port=80)
