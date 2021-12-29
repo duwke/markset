@@ -23,6 +23,9 @@
       main {
         display: none;
       }
+      #led_matrix.tr.td{
+        min-width: 5px;
+      }
     </style>
 
   </head>
@@ -108,7 +111,18 @@
           </div>
         </div>
 
+        <div class="col-sm-3">
+          
+        </div>
 
+      </div>
+      <div class="row">
+
+        <h5 class="card-title">LEDs <button type='button' id="countDownBegin" class='btn btn-success' >Begin Countdown</button></h5>
+        <table class="table table-condensed">
+          <tbody id="led_matrix">
+          </tbody>
+        </table>
       </div>
 
     </main> <!-- of status -->
@@ -145,144 +159,7 @@
     <!-- JQuery -->
     <script src="/js/jquery-3.2.1.min.js"></script>
 
-    <!--  ESP8266 scripts -->
-    <script>
-      function update_status(data)
-      {
-          $.each(data["memory"], function(key, val) {
-            var m = parseFloat(val / 1000).toFixed(2);
-            $("#" + key).text(m + 'k');
-          });
-          $.each(data["network"], function(key, val) {
-            $("#" + key).text(val);
-          });
-      }
-
-      function update_gpio(data)
-      {
-        var res = "";
-        $.each(data["pins"], function(key, val) {
-          var state = "Off";
-          var btn = "<button type='button' class='btn btn-success' act=1 pin=" + val["gpio"] + ">Turn On</button>";
-          if (val["value"] != "0") {
-            state = "On";
-            btn = "<button type='button' class='btn btn-secondary' act=0 pin=" + val["gpio"] + ">Turn Off</button>";
-          }
-          res += "<tr><td>" + val["gpio"] + "</td>";
-          res += "<td>" + val["nodemcu"] + "</td>";
-          res += "<td>" + state + "</td>";
-          res += "<td class='text-center'>" + btn + "</tr>";
-        });
-        // update table rows
-        $("#gpio_rows").html(res);
-        // handle button click event
-        $("button[pin]").click(function(e) {
-          e.preventDefault();
-          // Send RESTApi request to change port status
-          $.ajax({
-              url: "/api/gpio/" + $(this).attr("pin"),
-              type : "PUT",
-              // contentType: 'application/json',
-              data : {"value": $(this).attr("act")},
-              success : function(result) {
-                  // on success - reload table
-                  console.log(result);
-                  on_hash_change();
-              },
-              error: function(xhr, resp, text) {
-                  console.log(method, uri, resp, text);
-              }
-          })
-        });
-      }
-
-      function update_buttons(){
-        var lightsOn = false;
-        $("#lights").click(function(e) {
-          e.preventDefault();
-          // Send RESTApi request to change port status
-          $.ajax({
-              url: "/api/lights",
-              type : "PUT",
-              // contentType: 'application/json',
-              success : function(result) {
-                  // on success - reload table
-                  console.log(result);
-                  on_hash_change();
-              },
-              error: function(xhr, resp, text) {
-                  console.log(method, uri, resp, text);
-              }
-          })
-        });
-        $("#webserverRestart").click(function(e) {
-          e.preventDefault();
-          // Send RESTApi request to change port status
-          $.ajax({
-              url: "/api/status",
-              type : "PUT",
-              data: {"status": "restart"},
-              // contentType: 'application/json',
-              success : function(result) {
-                  // on success - reload table
-                  console.log(result);
-                  on_hash_change();
-              },
-              error: function(xhr, resp, text) {
-                  console.log(method, uri, resp, text);
-              }
-          })
-        })
-        $("#webserverOff").click(function(e) {
-          e.preventDefault();
-          // Send RESTApi request to change port status
-          $.ajax({
-              url: "/api/status",
-              type : "PUT",
-              data: {"status": "off"},
-              // contentType: 'application/json',
-              success : function(result) {
-                  // on success - reload table
-                  console.log(result);
-                  on_hash_change();
-              },
-              error: function(xhr, resp, text) {
-                  console.log(method, uri, resp, text);
-              }
-          })
-        });
-        //$("#myButton").html("Off");
-      }
-
-      function on_hash_change()
-      {
-        var hash = window.location.hash;
-        if (hash == '') {
-          hash = '#status';
-        }
-        console.log("Hash change", hash);
-        $.getJSON("api/" + hash.substring(1), function(data) {
-          if (hash == "#status") {
-            update_status(data)
-          }
-          if (hash == "#gpio") {
-            update_gpio(data);
-          }
-        });
-        $("main").hide()
-        $(hash).show();
-      }
-
-      function load(){
-        debugger;
-        update_buttons();
-        on_hash_change();
-      }
-
-      window.onhashchange = on_hash_change;
-      $(document).ready(load);
-
-    </script> <!-- End of ESP scripts -->
+    <script src="/markset.js" ></script>
 
   </body>
 </html>
