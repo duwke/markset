@@ -1,0 +1,34 @@
+extra:
+  - 1800.00:
+      audio: countdown.mp3
+      function: 'Countdown'
+      num_minutes: 15
+  - 1814.00:
+      audio: tornado.mp3
+      function: 'Countdown'
+      num_minutes: 1
+  - 1814.50:
+      audio: ten_beeps.mp3
+      function: 'Countdown'
+      num_minutes: 0
+      num_seconds: 10
+  - 1815.00:
+      function: 'BeginRacing'
+
+order: 
+  - 'NS-B':
+    color: white
+    audio: sailing.mp3
+    bitmap: bitmaps/nsb.bmp
+  - 'NS-A & Cal 22':
+    color: yellow
+    audio: some_song.mp3
+    bitmap: bitmaps/nsa_cal22.bmporder: 
+  - 'NS-B':
+    color: white
+    audio: sailing.mp3
+    bitmap: bitmaps/nsb.bmp
+  - 'NS-A & Cal 22':
+    color: yellow
+    audio: some_song.mp3
+    bitmap: bi

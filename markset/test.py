@@ -1,27 +1,11 @@
-#!/usr/bin/env micropython
-"""
-MIT license
-(C) Konstantin Belyalov 2017-2018
-"""
+
+
 import tinyweb
-from machine import Pin
-from neopixel import NeoPixel
-from machine import Timer
-import gc
-import machine
-import random
+import race_matrix
+import json
 
-
-# Create web server application
 app = tinyweb.webserver()
 
-pins = {4: 'D2',
-        5: 'D1',
-        12: 'D6',
-        13: 'D7',
-        14: 'D5',
-        15: 'D8',
-        16: 'D0'}
 
 # Index page
 @app.route('/')
@@ -29,6 +13,11 @@ pins = {4: 'D2',
 async def index(req, resp):
     # Just send file
     await resp.send_file('index.html')
+
+@app.route('/markset.js')
+async def index(req, resp):
+    # Just send file
+    await resp.send_file('markset.js', max_age=0)
 
 
 # Images
@@ -55,16 +44,14 @@ async def files_css(req, resp, fn):
     await resp.send_file('static/css/{}.gz'.format(fn),
                          content_type='text/css',
                          content_encoding='gzip')
-
-
 class Lights():
 
     def __init__(self):
         self.data = []
         self.num_leds = 35
         self.pinColors = []
-        pin = Pin(2, Pin.OUT)   # set GPIO0 to output to drive NeoPixels
-        self.np = NeoPixel(pin, self.num_leds)   # create NeoPixel driver on GPIO0
+        # pin = Pin(2, Pin.OUT)   # set GPIO0 to output to drive NeoPixels
+        # self.np = NeoPixel(pin, self.num_leds)   # create NeoPixel driver on GPIO0
 
     def turn_off(self):
         for i in range(self.num_leds):
@@ -88,6 +75,30 @@ class Lights():
         off_timer = Timer(1)
         off_timer.init(mode=Timer.Timer.PERIODIC, period=500, callback=self.randow)  
         return {'message': 'changed', 'value': 'on'}
+
+class FileSystem():
+    def post(self, data):
+        
+        print("fs post:" + str(data))
+        return {'result': 'true'}
+
+class LedMatrix():
+
+    def __init__(self):
+        self.rows = 10
+        self.columns = 60
+        self.matrix_data = []
+        self.matrix = race_matrix.RaceMatrix(self.rows, self.columns, self.update_matrix)
+
+    def update_matrix(self, data):
+        self.matrix_data = data
+
+    def get(self, data):
+        return {'rows': self.rows, 'columns': self.columns, 'matrix': self.matrix_data}
+
+    def put(self, data):
+        self.matrix.BeginTimer(3)
+        return {'result': 'true'}
 
 # RESTAPI: System status
 class Status():
@@ -127,47 +138,11 @@ class Status():
             print("Restart3")
         
         return {'message': 'changed', 'value': data['status']}
-    
-
-
-class FileSystem():
-    def post(self, data):
-        
-        print("fs post:" + str(data))
-        return {'result': 'true'}
-
-# RESTAPI: GPIO status
-class GPIOList():
-
-    def get(self, data):
-        res = []
-        for p, d in pins.items():
-            val = machine.Pin(p).value()
-            res.append({'gpio': p, 'nodemcu': d, 'value': val})
-        return {'pins': res}
-
-
-# RESTAPI: GPIO controller: turn PINs on/off
-class GPIO():
-
-    def put(self, data, pin):
-        # Check input parameters
-        if 'value' not in data:
-            return {'message': '"value" is requred'}, 400
-        # Check pin
-        pin = int(pin)
-        if pin not in pins:
-            return {'message': 'no such pin'}, 404
-        # Change state
-        val = int(data['value'])
-        machine.Pin(pin).value(val)
-        return {'message': 'changed', 'value': val}
 
 if __name__ == '__main__':
     app.add_resource(Lights, '/api/lights')
     app.add_resource(FileSystem, '/api/files')
     app.add_resource(Status, '/api/status')
-    app.add_resource(GPIOList, '/api/gpio')
-    app.add_resource(GPIO, '/api/gpio/<pin>')
+    app.add_resource(LedMatrix, '/api/leds')
     print("webserver starting")
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=8082)    

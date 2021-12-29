@@ -1,0 +1,205 @@
+
+function update_status(data) {
+    $.each(data["memory"], function (key, val) {
+        var m = parseFloat(val / 1000).toFixed(2);
+        $("#" + key).text(m + 'k');
+    });
+    $.each(data["network"], function (key, val) {
+        $("#" + key).text(val);
+    });
+}
+
+function create_polygon(id) {
+    var polygon = $(id);
+    var sides = 6;
+    var radius = 5;
+    var angle = 2 * Math.PI / sides;
+    var points = [];
+
+    for (var i = 0; i < sides; i++) {
+        points.push(radius + radius * Math.sin(i * angle));
+        points.push(radius - radius * Math.cos(i * angle));
+    }
+
+    polygon.points = points;
+}
+
+function update_gpio(data) {
+    var res = "";
+    $.each(data["pins"], function (key, val) {
+        var state = "Off";
+        var btn = "<button type='button' class='btn btn-success' act=1 pin=" + val["gpio"] + ">Turn On</button>";
+        if (val["value"] != "0") {
+            state = "On";
+            btn = "<button type='button' class='btn btn-secondary' act=0 pin=" + val["gpio"] + ">Turn Off</button>";
+        }
+        res += "<tr><td>" + val["gpio"] + "</td>";
+        res += "<td>" + val["nodemcu"] + "</td>";
+        res += "<td>" + state + "</td>";
+        res += "<td class='text-center'>" + btn + "</tr>";
+    });
+    // update table rows
+    $("#gpio_rows").html(res);
+    // handle button click event
+    $("button[pin]").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/gpio/" + $(this).attr("pin"),
+            type: "PUT",
+            // contentType: 'application/json',
+            data: { "value": $(this).attr("act") },
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+                on_hash_change();
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+}
+
+function poll_led_matrix() {
+    $.ajax({
+        url: "/api/leds",
+        type: "GET",
+        // contentType: 'application/json',
+        success: update_test_led_matrix,
+        error: function (xhr, resp, text) {
+            console.log(method, uri, resp, text);
+        }
+    })
+}
+let matrixCreated = false;
+function update_test_led_matrix(data) {
+    var res = "";
+    if (!matrixCreated) {
+        matrixCreated = true;
+        var ledIndex = 0;
+        for (var i = 0; i < data.rows; i++) {
+            res += "<tr>";
+            for (var j = 0; i < data.columns; i++) {
+                res += "<td><svg><polygon id='led_matrix" + ledIndex + "' /></td>";
+                ledIndex += 1;
+            }
+            res += "</tr>";
+        }
+        // update table rows
+        $("#led_matrix").html(res);
+        ledIndex = 0;
+        for (var i = 0; i < data.rows; i++) {
+            for (var j = 0; i < data.columns; i++) {
+                create_polygon('led_matrix' + ledIndex);
+            }
+        }
+    }
+
+    for (var i = 0; i < data.matrix.length; i++) {
+        $('#led_matrix' + i).css.fill(data.matrix[i]);
+    }
+}
+
+function update_buttons() {
+    var lightsOn = false;
+    $("#lights").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/lights",
+            type: "PUT",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+                on_hash_change();
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#webserverRestart").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/status",
+            type: "PUT",
+            data: { "status": "restart" },
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+                on_hash_change();
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    })
+    $("#webserverOff").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/status",
+            type: "PUT",
+            data: { "status": "off" },
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+                on_hash_change();
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#countDownBegin").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/leds",
+            type: "PUT",
+            data: { "num_min": "3" },
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    //$("#myButton").html("Off");
+}
+
+function on_hash_change() {
+    var hash = window.location.hash;
+    if (hash == '') {
+        hash = '#status';
+    }
+    console.log("Hash change", hash);
+    $.getJSON("api/" + hash.substring(1), function (data) {
+        if (hash == "#status") {
+            update_status(data)
+        }
+        if (hash == "#gpio") {
+            update_gpio(data);
+        }
+    });
+    $("main").hide()
+    $(hash).show();
+}
+
+function load() {
+    debugger;
+    update_buttons();
+    setInterval(poll_led_matrix, 500);
+    on_hash_change();
+}
+
+window.onhashchange = on_hash_change;
+$(document).ready(load);
