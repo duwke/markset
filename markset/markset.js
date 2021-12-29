@@ -10,7 +10,7 @@ function update_status(data) {
 }
 
 function create_polygon(id) {
-    var polygon = $(id);
+    var polygon = $("#" + id);
     var sides = 6;
     var radius = 5;
     var angle = 2 * Math.PI / sides;
@@ -21,7 +21,7 @@ function create_polygon(id) {
         points.push(radius - radius * Math.cos(i * angle));
     }
 
-    polygon.points = points;
+    polygon[0].setAttribute("points", points);
 }
 
 function update_gpio(data) {
@@ -80,8 +80,8 @@ function update_test_led_matrix(data) {
         var ledIndex = 0;
         for (var i = 0; i < data.rows; i++) {
             res += "<tr>";
-            for (var j = 0; i < data.columns; i++) {
-                res += "<td><svg><polygon id='led_matrix" + ledIndex + "' /></td>";
+            for (var j = 0; j < data.columns; j++) {
+                res += "<td><svg width='12' height='12'><polygon id='led_matrix" + ledIndex + "'  /></td>";
                 ledIndex += 1;
             }
             res += "</tr>";
@@ -90,14 +90,16 @@ function update_test_led_matrix(data) {
         $("#led_matrix").html(res);
         ledIndex = 0;
         for (var i = 0; i < data.rows; i++) {
-            for (var j = 0; i < data.columns; i++) {
+            for (var j = 0; j < data.columns; j++) {
                 create_polygon('led_matrix' + ledIndex);
+                ledIndex += 1;
             }
         }
     }
 
     for (var i = 0; i < data.matrix.length; i++) {
-        $('#led_matrix' + i).css.fill(data.matrix[i]);
+        let color = "rgb(" + data.matrix[i][0] + "," + data.matrix[i][1] + "," + data.matrix[i][2] + ")"; 
+        $('#led_matrix' + i).css({fill: color});
     }
 }
 
@@ -197,7 +199,7 @@ function on_hash_change() {
 function load() {
     debugger;
     update_buttons();
-    setInterval(poll_led_matrix, 500);
+    setInterval(poll_led_matrix, 100);
     on_hash_change();
 }
 
