@@ -9,6 +9,7 @@ from neopixel import NeoPixel
 from machine import Timer
 import gc
 import machine
+import race_matrix
 import random
 
 
@@ -29,6 +30,11 @@ pins = {4: 'D2',
 async def index(req, resp):
     # Just send file
     await resp.send_file('index.html')
+
+@app.route('/markset.js')
+async def index(req, resp):
+    # Just send file
+    await resp.send_file('markset.js', max_age=0, content_type='application/javascript')
 
 
 # Images
@@ -89,6 +95,24 @@ class Lights():
         off_timer.init(mode=Timer.Timer.PERIODIC, period=500, callback=self.randow)  
         return {'message': 'changed', 'value': 'on'}
 
+class LedMatrix():
+
+    def __init__(self):
+        self.rows = 10
+        self.columns = 60
+        self.matrix_data = []
+        self.matrix = race_matrix.RaceMatrix(self.rows, self.columns, self.update_matrix)
+
+    def update_matrix(self, data):
+        self.matrix_data = data
+
+    def get(self, data):
+        return {'rows': self.rows, 'columns': self.columns, 'matrix': self.matrix_data}
+
+    def put(self, data):
+        self.matrix.BeginTimer(3)
+        return {'result': 'true'}
+
 # RESTAPI: System status
 class Status():
 
@@ -130,12 +154,6 @@ class Status():
     
 
 
-class FileSystem():
-    def post(self, data):
-        
-        print("fs post:" + str(data))
-        return {'result': 'true'}
-
 # RESTAPI: GPIO status
 class GPIOList():
 
@@ -165,9 +183,9 @@ class GPIO():
 
 if __name__ == '__main__':
     app.add_resource(Lights, '/api/lights')
-    app.add_resource(FileSystem, '/api/files')
     app.add_resource(Status, '/api/status')
     app.add_resource(GPIOList, '/api/gpio')
     app.add_resource(GPIO, '/api/gpio/<pin>')
+    app.add_resource(LedMatrix, '/api/leds')
     print("webserver starting")
-    app.run(host='0.0.0.0', port=80)
+    #app.run(host='0.0.0.0', port=80)

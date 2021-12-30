@@ -16,10 +16,20 @@ pymakr extension requires node - curl -sL https://deb.nodesource.com/setup_16.x 
 
 esptool.py --port /dev/ttyUSB0 erase_flash
 esptool.py --chip esp32 --port /dev/ttyUSB0 write_flash -z 0x1000 esp32spiram-20210902-v1.17.bin
-ampy -p /dev/ttyUSB0 put tinyweb
-ampy -p /dev/ttyUSB0 put main.py
-ampy -p /dev/ttyUSB0 put boot.py
-ampy -p /dev/ttyUSB0 put static
+
+- turn on wifi
+import network
+
+wlan = network.WLAN(network.STA_IF) # create station interface
+wlan.active(True)       # activate the interface
+wlan.connect('essid', 'password') # connect to an AP
+wlan.ifconfig()         # get the interface's IP/netmask/gw/DNS addresses
+
+- turn on webrepl
+import webrepl_setup
+
+- sync markset
+./webreplcmd --host 10.0.0.81 --password markset sync ../markset
 
 # testing on ubuntu
 clone mycropython

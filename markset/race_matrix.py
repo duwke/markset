@@ -1,6 +1,6 @@
 
 import uasyncio
-
+import framebuf
 
 
 class RaceMatrix:
@@ -139,10 +139,10 @@ class RaceMatrix:
         self.update_ui_cb_(self.matrix_)
 
         # FrameBuffer needs 2 bytes for every RGB565 pixel
-        #self.fbuf = framebuf.FrameBuffer(bytearray(rows * columns * 2), columns, rows, framebuf.RGB565)
-        #self.fbuf.fill(0)
+        self.fbuf = framebuf.FrameBuffer(bytearray(rows * columns * 2), columns, rows, framebuf.RGB565)
+        self.fbuf.fill(0)
 
-    def BeginTimer(self, num_minutes):
+    def begin_timer(self, num_minutes):
 
         self.min_countdown_ = num_minutes
         self.tens_seconds_countdown_ = 0
@@ -153,9 +153,9 @@ class RaceMatrix:
     async def _timer(self):
         while self.seconds_countdown_ >= 0 and self.tens_seconds_countdown_ >= 0 and self.min_countdown_ >= 0:
             self.CountDown()
-            await uasyncio.sleep(1) # need to sleep to next full time second
+            await uasyncio.sleep(1) # TODO: need to sleep to next full time second
 
-    def CountDown(self):
+    def count_down(self):
         self.seconds_countdown_ -= 1
         if(self.seconds_countdown_ < 0):
             self.seconds_countdown_ = 9
@@ -164,9 +164,9 @@ class RaceMatrix:
             self.tens_seconds_countdown_ = 5
             self.min_countdown_ -= 1
 
-        self.DisplayBigNumber(0, self.min_countdown_, True)
-        self.DisplayBigNumber(13, self.tens_seconds_countdown_, False)
-        self.DisplayBigNumber(24, self.seconds_countdown_, False)
+        self.display_big_number(0, self.min_countdown_, True)
+        self.display_big_number(13, self.tens_seconds_countdown_, False)
+        self.display_big_number(24, self.seconds_countdown_, False)
 
         self.update_ui_cb_(self.matrix_)
 
@@ -184,7 +184,7 @@ class RaceMatrix:
         # a[x,y,2] = B<<3
         
 
-    def DisplayBigNumber(self, offset, num, debug):
+    def display_big_number(self, offset, num, debug):
         if self.rows_ < 10:
             raise Exception('numbers are currently 10 wide and 10 long')
         for i in range(self.rows_):

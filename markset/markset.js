@@ -199,7 +199,7 @@ function on_hash_change() {
 function load() {
     debugger;
     update_buttons();
-    setInterval(poll_led_matrix, 100);
+    setInterval(poll_led_matrix, 500);
     on_hash_change();
 }
 
