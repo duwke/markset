@@ -162,9 +162,41 @@ function update_buttons() {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/leds",
-            type: "PUT",
+            url: "/api/race/count_down",
+            type: "POST",
             data: { "num_min": "3" },
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#showOrder").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/race/show_order",
+            type: "POST",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#raceBegin").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/race/begin_race",
+            type: "POST",
             // contentType: 'application/json',
             success: function (result) {
                 // on success - reload table

@@ -79,23 +79,7 @@ class Lights():
         off_timer.init(mode=Timer.Timer.PERIODIC, period=500, callback=self.ranidow)  
         return {'message': 'changed', 'value': 'on'}
 
-class LedMatrix():
 
-    def __init__(self):
-        self.rows = 10
-        self.columns = 60
-        self.matrix_data = []
-        self.matrix = race_matrix.RaceMatrix(self.update_matrix)
-
-    def update_matrix(self, data):
-        self.matrix_data = data
-
-    def get(self):
-        return {'rows': self.rows, 'columns': self.columns, 'matrix': self.matrix_data}
-
-    def put(self, data):
-        self.matrix.begin_timer(3)
-        return {'result': 'true'}
 
 # RESTAPI: System status
 class Status():
@@ -129,14 +113,25 @@ class Status():
         return {'message': 'changed', 'value': data['status']}
     
 
+matrix = race_matrix.RaceMatrix()
 
-led_matrix = LedMatrix()
-@app.route('/api/leds', methods=['PUT', 'GET'])
-async def me_api():
-    if request.method == 'PUT':
-        return led_matrix.put(request.form)
-    elif request.method == 'GET':
-        return led_matrix.get()
+@app.route('/api/leds', methods=['GET'])
+async def led_api():
+    if request.method == 'GET':
+        matrix_info = matrix.get_matrix()
+        return {'rows': matrix_info['rows'], 'columns': matrix_info['columns'], 'matrix': matrix_info['matrix_data']}
+
+@app.route('/api/race/<mode>', methods=['POST'])
+async def race_api(mode):
+    if request.method == 'POST':
+        if mode == "count_down":
+            matrix.begin_countdown()
+        elif mode == "show_order":
+            matrix.begin_show_order()
+        elif mode == "begin_race":
+            matrix.begin_racing()
+        return {'result': 'true'}
+
         
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)

@@ -1,4 +1,6 @@
-extra:
+
+min_between_race: 1
+timeline:
   - 1800.00:
       audio: countdown.mp3
       function: 'Countdown'
@@ -16,19 +18,24 @@ extra:
       function: 'BeginRacing'
 
 order: 
-  - 'NS-B':
-    color: white
+  - name: 'NS-B'
+    color: 0x00FF00
     audio: sailing.mp3
     bitmap: bitmaps/nsb.bmp
-  - 'NS-A & Cal 22':
-    color: yellow
-    audio: some_song.mp3
-    bitmap: bitmaps/nsa_cal22.bmporder: 
-  - 'NS-B':
-    color: white
+  - name: 'NS-A & C-22'
+    color: 0x0000FF
+    color2: 0x6a0dad
+    audio: some_song.mp3 
+  - name: 'PM'
+    color: 0x964B00
     audio: sailing.mp3
     bitmap: bitmaps/nsb.bmp
-  - 'NS-A & Cal 22':
-    color: yellow
+  - name: 'SPIN'
+    color: 0xFFDB58
     audio: some_song.mp3
-    bitmap: bi
+  - name: 'J22'
+    color: 0xFF0000
+    audio: some_song.mp3
+  - name: 'J24'
+    color: 0xFFC0CB
+    audio: some_song.mp3
