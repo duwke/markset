@@ -1,40 +1,30 @@
-#!/usr/bin/env micropython
-"""
-MIT license
-(C) Konstantin Belyalov 2017-2018
-"""
-import tinyweb
-from machine import Pin
+
+import board
 from neopixel import NeoPixel
-from machine import Timer
 import gc
-import machine
 import race_matrix
 import random
+import asyncio
+import socket
 
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 
-# Create web server application
-app = tinyweb.webserver()
-
-pins = {4: 'D2',
-        5: 'D1',
-        12: 'D6',
-        13: 'D7',
-        14: 'D5',
-        15: 'D8',
-        16: 'D0'}
+app = Flask(__name__)
 
 # Index page
 @app.route('/')
 @app.route('/index.html')
-async def index(req, resp):
-    # Just send file
-    await resp.send_file('index.html')
+def index():
+    render_template('index.html')
+
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
 
 @app.route('/markset.js')
-async def index(req, resp):
+def index():
     # Just send file
-    await resp.send_file('markset.js', max_age=0, content_type='application/javascript')
+    return send_from_directory('', 'markset.js')
 
 
 # Images
@@ -48,7 +38,11 @@ async def images(req, resp, fn):
 # Since ESP8266 is low memory platform - it totally make sense to
 # pre-gzip all large files (>1k) and then send gzipped version
 @app.route('/js/<fn>')
-async def files_js(req, resp, fn):
+async def files_js(fn):
+    resp =  send_from_directory('static/js', '{}.gz'.format(fn))
+    resp.headers['Content-Encoding'] = 'gzip'
+    return resp
+
     await resp.send_file('static/js/{}.gz'.format(fn),
                          content_type='application/javascript',
                          content_encoding='gzip')
@@ -69,8 +63,7 @@ class Lights():
         self.data = []
         self.num_leds = 35
         self.pinColors = []
-        pin = Pin(2, Pin.OUT)   # set GPIO0 to output to drive NeoPixels
-        self.np = NeoPixel(pin, self.num_leds)   # create NeoPixel driver on GPIO0
+        self.np = NeoPixel(board.D18, self.num_leds)   # create NeoPixel driver on GPIO0
 
     def turn_off(self):
         for i in range(self.num_leds):
@@ -101,7 +94,7 @@ class LedMatrix():
         self.rows = 10
         self.columns = 60
         self.matrix_data = []
-        self.matrix = race_matrix.RaceMatrix(self.rows, self.columns, self.update_matrix)
+        self.matrix = race_matrix.RaceMatrix(self.update_matrix)
 
     def update_matrix(self, data):
         self.matrix_data = data
@@ -120,72 +113,36 @@ class Status():
         mem = {'mem_alloc': gc.mem_alloc(),
                'mem_free': gc.mem_free(),
                'mem_total': gc.mem_alloc() + gc.mem_free()}
-        sta_if = network.WLAN(network.STA_IF)
-        ifconfig = sta_if.ifconfig()
-        net = {'ip': ifconfig[0],
-               'netmask': ifconfig[1],
-               'gateway': ifconfig[2],
-               'dns': ifconfig[3]
+        hostname = socket.gethostname()
+        local_ip = socket.gethostbyname(hostname)
+        net = {'ip': local_ip,
+               'netmask': '',
+               'gateway': '',
+               'dns': ''
                }
         return {'memory': mem, 'network': net}
     
-    def shutdown(self, t):
-        print("Restart4")
+    async def shutdown(self):
+        print("Restart")
+        await asyncio.sleep(1) # TODO: need to sleep to next full time second
         app.shutdown()
 
-    def restart(self, t):
-        print("Restart4")
-        machine.reset()
 
     def put(self, data):
         """stop the webserver"""
         print("Status put " + str(data['status']))
         if(data['status'] == "off"):
-            off_timer = Timer(2)
-            off_timer.init(mode=Timer.ONE_SHOT, period=1000, callback= self.shutdown)
-        if(data['status'] == "restart"):
-            print("Restart")
-            off_timer = Timer(2)
-            print("Restart2")
-            off_timer.init(mode=Timer.ONE_SHOT, period=1000, callback= self.restart)
-            print("Restart3")
+            asyncio.get_event_loop().create_task(self.shutdown())
+
         
         return {'message': 'changed', 'value': data['status']}
     
 
 
-# RESTAPI: GPIO status
-class GPIOList():
-
-    def get(self, data):
-        res = []
-        for p, d in pins.items():
-            val = machine.Pin(p).value()
-            res.append({'gpio': p, 'nodemcu': d, 'value': val})
-        return {'pins': res}
-
-
-# RESTAPI: GPIO controller: turn PINs on/off
-class GPIO():
-
-    def put(self, data, pin):
-        # Check input parameters
-        if 'value' not in data:
-            return {'message': '"value" is requred'}, 400
-        # Check pin
-        pin = int(pin)
-        if pin not in pins:
-            return {'message': 'no such pin'}, 404
-        # Change state
-        val = int(data['value'])
-        machine.Pin(pin).value(val)
-        return {'message': 'changed', 'value': val}
 
 if __name__ == '__main__':
     app.add_resource(Lights, '/api/lights')
     app.add_resource(Status, '/api/status')
-    app.add_resource(GPIOList, '/api/gpio')
-    app.add_resource(GPIO, '/api/gpio/<pin>')
     app.add_resource(LedMatrix, '/api/leds')
     print("webserver starting")
-    #app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=80)

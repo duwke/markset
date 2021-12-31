@@ -1,15 +1,17 @@
 
-import uasyncio
-import framebuf
+import asyncio
+
+import neopixel
+import board
+import adafruit_framebuf
 
 
 class RaceMatrix:
 ### a generic class for displaying 10x60 matrix.  Consumed by web and led display.
 
 
-    def __init__(self, rows, columns, update_ui_cb, fill_color=(254, 254, 254), background_color=(0,0,0)):
-        self.rows_ = rows
-        self.columns_ = columns
+    def __init__(self, update_ui_cb, framebuf=adafruit_framebuf.FrameBuffer(bytearray(60 * 10 * 3), 60, 10, buf_format=adafruit_framebuf.RGB888),fill_color=0xff0000, background_color=0x000000):
+        self.framebuf_ = framebuf
         self.min_countdown_ = 3
         self.tens_seconds_countdown_ = 0
         self.seconds_countdown_ = 0
@@ -132,15 +134,21 @@ class RaceMatrix:
             ]
         ]
 
-        self.matrix_ = []
-        for i in range(self.rows_):
-            for j in range(self.columns_):
-                self.matrix_.append(background_color)
-        self.update_ui_cb_(self.matrix_)
+        self.framebuf_.fill(background_color)
+        self.update_ui_cb_(self.get_matrix())
 
-        # FrameBuffer needs 2 bytes for every RGB565 pixel
-        self.fbuf = framebuf.FrameBuffer(bytearray(rows * columns * 2), columns, rows, framebuf.RGB565)
-        self.fbuf.fill(0)
+        # pixel_pin = board.D21
+        # num_pixels = 600
+        # ORDER = neopixel.RGB
+        # pixels = neopixel.NeoPixel(
+        #     pixel_pin, num_pixels, brightness=0.2, auto_write=True, pixel_order=ORDER
+        # )
+        # pixel_framebuf = PixelFramebuffer(
+        #     pixels,
+        #     60,
+        #     10,
+        #     orientation=PixelFramebuffer.VERTICAL,
+        #     rotation=2)
 
     def begin_timer(self, num_minutes):
 
@@ -148,12 +156,12 @@ class RaceMatrix:
         self.tens_seconds_countdown_ = 0
         self.seconds_countdown_ = 0
         if self.current_task_ is None:
-            self.current_task_ = uasyncio.get_event_loop().create_task(self._timer())
+            self.current_task_ = asyncio.get_event_loop().create_task(self._timer())
 
     async def _timer(self):
         while self.seconds_countdown_ >= 0 and self.tens_seconds_countdown_ >= 0 and self.min_countdown_ >= 0:
             self.CountDown()
-            await uasyncio.sleep(1) # TODO: need to sleep to next full time second
+            await asyncio.sleep(1) # TODO: need to sleep to next full time second
 
     def count_down(self):
         self.seconds_countdown_ -= 1
@@ -168,21 +176,8 @@ class RaceMatrix:
         self.display_big_number(13, self.tens_seconds_countdown_, False)
         self.display_big_number(24, self.seconds_countdown_, False)
 
-        self.update_ui_cb_(self.matrix_)
+        self.update_ui_cb_(self.get_matrix())
 
-        # index = y+colunas*x
-        # pixel = dataArray[index]
-        # #invert byte order
-        # pixel = ((dataArray[index]&0xFF)<<8)|(dataArray[index]>>8)
-        # #separa as cores
-        # R = pixel&0b1111100000000000
-        # G = pixel&0b0000011111100000
-        # B = pixel&0b0000000000011111
-        # #shift para a posição correta
-        # a[x,y,0] = R>>8
-        # a[x,y,1] = G>>3
-        # a[x,y,2] = B<<3
-        
 
     def display_big_number(self, offset, num, debug):
         if self.rows_ < 10:
@@ -195,13 +190,21 @@ class RaceMatrix:
                 # git bit is reversed
                 print(str(start_index) + " " + str(j) +  " " + str(bit_row) + " " + str(1 << j))
                 if self.get_bit(bit_row, j) == 1:
-                    self.matrix_[start_index + (9 - j)] = self.fill_color_
+                    self.framebuf_.pixel(i, offset + (9 - j), self.fill_color_)
                 else:
-                    self.matrix_[start_index + (9 - j)] = self.background_color_
+                    self.framebuf_.pixel(i, offset + (9 - j), self.background_color_)
 
     def get_bit(self, value, bit_index):
         # print(str(value) + " " + str(1 << bit_index) + " " + str(value & (1 << bit_index)))
         return value & (1 << bit_index) == (1 << bit_index)
+
+    def get_matrix(self):
+        index = 0
+        matrix = []
+        for x in range(self.framebuf_.width):  
+            for y in range(self.framebuf_.height):  
+                matrix.append(self.framebuf_.pixel(x, y))
+        return matrix
 
 
         

@@ -4,14 +4,13 @@ MIT license
 (C) Konstantin Belyalov 2017-2018
 """
 import logging
-import uasyncio as asyncio
-import uasyncio.core
-import ujson as json
+import asyncio
+import json
 import gc
-import uos as os
+import os
 import sys
-import uerrno as errno
-import usocket as socket
+import errno
+import socket
 
 
 log = logging.getLogger('WEB')
@@ -20,7 +19,7 @@ type_gen = type((lambda: (yield))())
 
 # uasyncio v3 is shipped with MicroPython 1.13, and contains some subtle
 # but breaking changes. See also https://github.com/peterhinch/micropython-async/blob/master/v3/README.md
-IS_UASYNCIO_V3 = hasattr(asyncio, "__version__") and asyncio.__version__ >= (3,)
+IS_UASYNCIO_V3 = False # hasattr(asyncio, "__version__") and asyncio.__version__ >= (3,)
 
 
 def urldecode_plus(s):
@@ -651,7 +650,7 @@ class webserver:
             loop_forever - run loo.loop_forever(), otherwise caller must run it by itself.
         """
         self._server_coro = self._tcp_server(host, port, self.backlog)
-        self.loop.create_task(self._server_coro)
+        self.loop.create_task(self._server_coro())
         if loop_forever:
             self.loop.run_forever()
 
