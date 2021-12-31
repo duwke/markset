@@ -13,6 +13,22 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal"
-        }
+        },
+        {
+            "name": "Python: Quart",
+            "type": "python",
+            "request": "launch",
+            "module": "quart",
+            "env": {
+                "QUART_APP": "markset/main.py",
+                "QUART_ENV": "development",
+                "QUART_DEBUG": "0"
+            },
+            "args": [
+                "run",
+                "--host=0.0.0.0"
+            ],
+            "jinja": true
+        },
     ]
 }

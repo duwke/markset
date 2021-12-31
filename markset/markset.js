@@ -98,7 +98,7 @@ function update_test_led_matrix(data) {
     }
 
     for (var i = 0; i < data.matrix.length; i++) {
-        let color = "rgb(" + data.matrix[i][0] + "," + data.matrix[i][1] + "," + data.matrix[i][2] + ")"; 
+        let color =  "#" + data.matrix[i].toString(16).padStart(6, '0'); 
         $('#led_matrix' + i).css({fill: color});
     }
 }

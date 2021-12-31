@@ -7,54 +7,45 @@ import random
 import asyncio
 import socket
 
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from quart import Quart, render_template, request, redirect, url_for, send_from_directory
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 # Index page
 @app.route('/')
-@app.route('/index.html')
-def index():
-    render_template('index.html')
+async def index():
+    return await send_from_directory('markset', 'index.html')
 
 @app.route('/static/<path:path>')
-def send_static(path):
-    return send_from_directory('static', path)
+async def send_static(path):
+    return await send_from_directory('markset/static', path)
 
 @app.route('/markset.js')
-def index():
+async def markset():
     # Just send file
-    return send_from_directory('', 'markset.js')
-
+    return await send_from_directory('markset', 'markset.js')
 
 # Images
 @app.route('/images/<fn>')
-async def images(req, resp, fn):
-    # Send picture. Filename - in parameter
-    await resp.send_file('static/images/{}'.format(fn),
-                         content_type='image/jpeg')
-
-# JS files.
-# Since ESP8266 is low memory platform - it totally make sense to
+async def images(fn):
+    return await send_from_directory('markset/static/images', fn)
+                    
 # pre-gzip all large files (>1k) and then send gzipped version
 @app.route('/js/<fn>')
 async def files_js(fn):
-    resp =  send_from_directory('static/js', '{}.gz'.format(fn))
+    resp =  await send_from_directory('markset/static/js', '{}.gz'.format(fn))
     resp.headers['Content-Encoding'] = 'gzip'
     return resp
-
-    await resp.send_file('static/js/{}.gz'.format(fn),
-                         content_type='application/javascript',
-                         content_encoding='gzip')
-
 
 # The same for css files - e.g.
 # Raw version of bootstrap.min.css is about 146k, compare to gzipped version - 20k
 @app.route('/css/<fn>')
-async def files_css(req, resp, fn):
-    await resp.send_file('static/css/{}.gz'.format(fn),
-                         content_type='text/css',
-                         content_encoding='gzip')
+async def files_css(fn):
+    print("shit")
+    resp =  await send_from_directory('markset/static/css', '{}.gz'.format(fn))
+    resp.headers['Content-Encoding'] = 'gzip'
+    return resp
+
 
 
 class Lights():
@@ -70,7 +61,7 @@ class Lights():
             self.np[i] = (0, 0, 0)
         self.np.write()
 
-    def randow(self):
+    def raindow(self):
         for i in range(self.num_leds - 1, 1, -1):
             self.np[i - 1] = self.np[i]
         self.np[0] = (random.randint(0, 254), random.randint(0, 254), random.randint(0, 254))
@@ -85,7 +76,7 @@ class Lights():
             self.np[i] = (0, 0, 0)
         self.np.write()   
         off_timer = Timer(1)
-        off_timer.init(mode=Timer.Timer.PERIODIC, period=500, callback=self.randow)  
+        off_timer.init(mode=Timer.Timer.PERIODIC, period=500, callback=self.ranidow)  
         return {'message': 'changed', 'value': 'on'}
 
 class LedMatrix():
@@ -99,11 +90,11 @@ class LedMatrix():
     def update_matrix(self, data):
         self.matrix_data = data
 
-    def get(self, data):
+    def get(self):
         return {'rows': self.rows, 'columns': self.columns, 'matrix': self.matrix_data}
 
     def put(self, data):
-        self.matrix.BeginTimer(3)
+        self.matrix.begin_timer(3)
         return {'result': 'true'}
 
 # RESTAPI: System status
@@ -139,10 +130,13 @@ class Status():
     
 
 
-
-if __name__ == '__main__':
-    app.add_resource(Lights, '/api/lights')
-    app.add_resource(Status, '/api/status')
-    app.add_resource(LedMatrix, '/api/leds')
-    print("webserver starting")
-    app.run(host='0.0.0.0', port=80)
+led_matrix = LedMatrix()
+@app.route('/api/leds', methods=['PUT', 'GET'])
+async def me_api():
+    if request.method == 'PUT':
+        return led_matrix.put(request.form)
+    elif request.method == 'GET':
+        return led_matrix.get()
+        
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')

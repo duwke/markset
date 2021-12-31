@@ -11,6 +11,7 @@ class RaceMatrix:
 
 
     def __init__(self, update_ui_cb, framebuf=adafruit_framebuf.FrameBuffer(bytearray(60 * 10 * 3), 60, 10, buf_format=adafruit_framebuf.RGB888),fill_color=0xff0000, background_color=0x000000):
+        print("race matrix init")
         self.framebuf_ = framebuf
         self.min_countdown_ = 3
         self.tens_seconds_countdown_ = 0
@@ -19,6 +20,7 @@ class RaceMatrix:
         self.background_color_ = background_color
         self.fill_color_ = fill_color
         self.current_task_ = None
+        self.loop_ = None
 
         self.matrix_nums = [
             [
@@ -156,11 +158,13 @@ class RaceMatrix:
         self.tens_seconds_countdown_ = 0
         self.seconds_countdown_ = 0
         if self.current_task_ is None:
-            self.current_task_ = asyncio.get_event_loop().create_task(self._timer())
+            loop = asyncio.get_running_loop()
+            self.current_task_ = loop.create_task(self._timer())
+            #loop.run_forever()
 
     async def _timer(self):
         while self.seconds_countdown_ >= 0 and self.tens_seconds_countdown_ >= 0 and self.min_countdown_ >= 0:
-            self.CountDown()
+            self.count_down()
             await asyncio.sleep(1) # TODO: need to sleep to next full time second
 
     def count_down(self):
@@ -180,19 +184,18 @@ class RaceMatrix:
 
 
     def display_big_number(self, offset, num, debug):
-        if self.rows_ < 10:
+        if self.framebuf_.height < 10:
             raise Exception('numbers are currently 10 wide and 10 long')
-        for i in range(self.rows_):
+        for i in range(self.framebuf_.height):
             bit_row = self.matrix_nums[num][i]
-            start_index = (self.columns_ * i) + offset
             # the numbers are currently 10 leds wide
             for j in range(9, -1, -1):
                 # git bit is reversed
-                print(str(start_index) + " " + str(j) +  " " + str(bit_row) + " " + str(1 << j))
+                # print(str(str(j) +  " " + str(bit_row) + " " + str(1 << j)))
                 if self.get_bit(bit_row, j) == 1:
-                    self.framebuf_.pixel(i, offset + (9 - j), self.fill_color_)
+                    self.framebuf_.pixel(offset + (9 - j), i, self.fill_color_)
                 else:
-                    self.framebuf_.pixel(i, offset + (9 - j), self.background_color_)
+                    self.framebuf_.pixel(offset + (9 - j), i, self.background_color_)
 
     def get_bit(self, value, bit_index):
         # print(str(value) + " " + str(1 << bit_index) + " " + str(value & (1 << bit_index)))
@@ -201,8 +204,8 @@ class RaceMatrix:
     def get_matrix(self):
         index = 0
         matrix = []
-        for x in range(self.framebuf_.width):  
-            for y in range(self.framebuf_.height):  
+        for y in range(self.framebuf_.height):  
+            for x in range(self.framebuf_.width):  
                 matrix.append(self.framebuf_.pixel(x, y))
         return matrix
 
