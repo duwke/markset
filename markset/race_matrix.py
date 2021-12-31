@@ -139,18 +139,6 @@ class RaceMatrix:
         self.framebuf_.fill(background_color)
         self.update_ui_cb_(self.get_matrix())
 
-        # pixel_pin = board.D21
-        # num_pixels = 600
-        # ORDER = neopixel.RGB
-        # pixels = neopixel.NeoPixel(
-        #     pixel_pin, num_pixels, brightness=0.2, auto_write=True, pixel_order=ORDER
-        # )
-        # pixel_framebuf = PixelFramebuffer(
-        #     pixels,
-        #     60,
-        #     10,
-        #     orientation=PixelFramebuffer.VERTICAL,
-        #     rotation=2)
 
     def begin_timer(self, num_minutes):
 
@@ -166,6 +154,7 @@ class RaceMatrix:
         while self.seconds_countdown_ >= 0 and self.tens_seconds_countdown_ >= 0 and self.min_countdown_ >= 0:
             self.count_down()
             await asyncio.sleep(1) # TODO: need to sleep to next full time second
+        self.current_task_ = None
 
     def count_down(self):
         self.seconds_countdown_ -= 1
