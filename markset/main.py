@@ -3,6 +3,7 @@ import board
 from neopixel import NeoPixel
 import gc
 import race_matrix
+import anchorer
 import random
 import asyncio
 import socket
@@ -113,6 +114,7 @@ class Status():
         return {'message': 'changed', 'value': data['status']}
     
 
+anchor = anchorer.Anchorer()
 matrix = race_matrix.RaceMatrix()
 
 @app.route('/api/leds', methods=['GET'])
@@ -125,11 +127,24 @@ async def led_api():
 async def race_api(mode):
     if request.method == 'POST':
         if mode == "count_down":
-            matrix.begin_countdown()
+            matrix.begin_countdown(180)
         elif mode == "show_order":
             matrix.begin_show_order()
         elif mode == "begin_race":
             matrix.begin_racing()
+        return {'result': 'true'}
+
+@app.route('/api/anchor/<mode>', methods=['POST'])
+async def anchor_api(mode):
+    if request.method == 'POST':
+        if mode == "up":
+            await anchor.move()
+        if mode == "stop":
+            anchor.stop()
+        elif mode == "forward":
+            anchor.begin_forward()
+        elif mode == "reverse":
+            anchor.begin_reverse()
         return {'result': 'true'}
 
         

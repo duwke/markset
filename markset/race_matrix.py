@@ -7,6 +7,7 @@ import adafruit_framebuf
 import yaml
 from enum import Enum
 import time
+import logging
 
 
 class MODE(Enum):
@@ -21,6 +22,7 @@ class RaceMatrix:
     def __init__(self, framebuf=adafruit_framebuf.FrameBuffer(bytearray(60 * 10 * 3), 60, 10, buf_format=adafruit_framebuf.RGB888),fill_color=0xff0000, background_color=0x000000):
         print("race matrix init")
         self.framebuf_ = framebuf
+        self.top_framebuf_ = adafruit_framebuf.FrameBuffer(bytearray(framebuf.width * framebuf.height * 4), framebuf.width, framebuf.height, buf_format=adafruit_framebuf.RGB888)
         self.seconds_countdown_ = 0
         self.background_color_ = background_color
         self.fill_color_ = fill_color
@@ -28,7 +30,7 @@ class RaceMatrix:
         self.order_index_ = 0
         self.mode_ = MODE.WAITING
         self.start_time_ = None
-        self.tick_seconds_ = .25 # 4 hz ticks
+        self.seconds_per_tick_ = .25 # 5 hz ticks
         self.tick_index_ = 0 # the number of _timer ticks.  Keep this so we always tick the correct number of times, even if we get behind.
         self.ticks_total_ = 0 # for each mode, we set the number of expected ticks at the desired frequency
         self.seconds_countdown_ = 0
@@ -181,11 +183,13 @@ class RaceMatrix:
     def begin_timer_(self, seconds):
         # kick the timer
         self.start_time_ = time.time()
-        self.ticks_total_ = int(seconds / self.tick_seconds_)
+        self.ticks_total_ = int(seconds / self.seconds_per_tick_)
         self.seconds_countdown_ = seconds
+        self.tick_index_ = 0
         if self.current_task_ is None:
             loop = asyncio.get_running_loop()
             self.current_task_ = loop.create_task(self._timer())
+    
 
     async def _timer(self):
         ### update based on remaining ticks.  If we are behind, don't sleep.
@@ -200,11 +204,14 @@ class RaceMatrix:
             self.tick_index_ += 1
 
             duration = time.time() - self.start_time_
-            num_ticks = int(duration / self.tick_seconds_)
+            num_ticks = int(duration / self.seconds_per_tick_)
             if num_ticks <= self.tick_index_:
                 # just sleep enough to get to the next tick.
-                mill_seconds_til_next_tick = ((self.tick_index_ + 1) * self.tick_seconds_) - duration
+                mill_seconds_til_next_tick = ((self.tick_index_ + 1) * self.seconds_per_tick_) - duration
+                logging.info("ticks " + str(num_ticks) + "/" + str(self.ticks_total_))
                 await asyncio.sleep(mill_seconds_til_next_tick) 
+        logging.info("stop task")
+        self.framebuf_.fill(self.background_color_)
         self.current_task_ = None
 
     def show_order(self):
@@ -214,25 +221,36 @@ class RaceMatrix:
         pause_seconds = 4
         scroll_seconds = 6
         bottom_index = 0
-        num_seconds_in = self.tick_index_ * self.tick_seconds_
+        num_seconds_in = self.tick_index_ * self.seconds_per_tick_
         if num_seconds_in > pause_seconds:
             bottom_index = int((num_seconds_in - pause_seconds) / (pause_seconds + scroll_seconds)) + 1
-        
-        self.framebuf_.fill(self.config_['order'][bottom_index]['color'])
-        self.framebuf_.text(str(bottom_index + 1) + ":" + self.config_['order'][bottom_index]['name'], 0, 2, 0xffffff)
 
-        top_index = int(num_seconds_in / (pause_seconds + scroll_seconds)) 
-        seconds_shown_on_board = (int(num_seconds_in) % (pause_seconds + scroll_seconds)) 
-        if seconds_shown_on_board > pause_seconds:
-            ticks_per_index = (num_seconds_in + pause_seconds) / self.tick_seconds_
-            # this index has ben shown for this many ticks
-            ticks_showing_index = self.tick_index_ - (ticks_per_index * top_index)
-            num_ticks_scrolling = ticks_showing_index - (pause_seconds / self.tick_seconds_)
-            # num_ticks_scrolling corrosponds to the x
-            total_ticks_scrolling = scroll_seconds / self.tick_seconds_
-            frame_x =  int(self.framebuf_.width * (num_ticks_scrolling / total_ticks_scrolling))
-            # todo: scroll background too.  Blit would have been nice
-            self.framebuf_.text(str(top_index + 1) + "-" + self.config_['order'][top_index]['name'], frame_x, 2, 0xffffff)
+        if bottom_index + 1 > len(self.config_['order']):
+            return
+
+        self.framebuf_.fill(self.config_['order'][bottom_index]['color'])
+        self.framebuf_.text(str(bottom_index + 1) + "-" + self.config_['order'][bottom_index]['name'], 1, 2, 0xffffff)
+
+        if num_seconds_in > pause_seconds:
+            top_index = int(num_seconds_in / (pause_seconds + scroll_seconds)) 
+
+            # is the bottom the only thing shown?
+            ticks_in_this_index = self.tick_index_ - ((top_index) * (pause_seconds + scroll_seconds) / self.seconds_per_tick_)
+            is_paused = ticks_in_this_index < pause_seconds / self.seconds_per_tick_
+            logging.warn("is_paused " + str(is_paused) + " " + str(ticks_in_this_index))
+            if not is_paused:
+                self.top_framebuf_.fill(self.config_['order'][top_index]['color'])
+                self.top_framebuf_.text(str(top_index + 1) + "-" + self.config_['order'][top_index]['name'], 1, 2, 0xffffff)
+                
+                # determine how much we shift by.
+                ticks_into_scrolling = self.tick_index_ - ((top_index) * (pause_seconds + scroll_seconds) / self.seconds_per_tick_) - (pause_seconds / self.seconds_per_tick_)
+                frame_x = int((ticks_into_scrolling / (scroll_seconds / self.seconds_per_tick_)) * self.framebuf_.width)
+
+                logging.warn("frame_x " + str(self.tick_index_) + " " + str(frame_x) + " " + str(ticks_into_scrolling))
+                # copy top frame 
+                for y in range(self.framebuf_.height):  
+                    for x in range(self.framebuf_.width) :  
+                        self.framebuf_.pixel(x + frame_x, y, self.top_framebuf_.pixel(x, y))
 
 
     def show_racing(self):
@@ -240,7 +258,7 @@ class RaceMatrix:
 
     def count_down(self):
         # tick every second
-        if (self.tick_index_ * self.tick_seconds_) % 1.0 == 0:
+        if (self.tick_index_ * self.seconds_per_tick_) % 1.0 == 0:
             self.seconds_countdown_ -= 1
             num_min = int(self.seconds_countdown_ / 60)
             seconds_remaining = self.seconds_countdown_ % 60

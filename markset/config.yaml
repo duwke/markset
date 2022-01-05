@@ -18,24 +18,24 @@ timeline:
       function: 'BeginRacing'
 
 order: 
-  - name: 'NS-B'
-    color: 0x00FF00
+  - name: ' NSB'
+    color: 0x097969
     audio: sailing.mp3
     bitmap: bitmaps/nsb.bmp
-  - name: 'NS-A & C-22'
+  - name: ' NSA/C22'
     color: 0x0000FF
     color2: 0x6a0dad
     audio: some_song.mp3 
-  - name: 'PM'
+  - name: ' Portsm'
     color: 0x964B00
     audio: sailing.mp3
     bitmap: bitmaps/nsb.bmp
-  - name: 'SPIN'
-    color: 0xFFDB58
+  - name: ' SPIN'
+    color: 0xC29200
     audio: some_song.mp3
-  - name: 'J22'
-    color: 0xFF0000
+  - name: ' J-22'
+    color: 0xCC0000
     audio: some_song.mp3
-  - name: 'J24'
-    color: 0xFFC0CB
+  - name: ' J-24'
+    color: 0x590036
     audio: some_song.mp3

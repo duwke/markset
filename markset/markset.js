@@ -207,6 +207,70 @@ function update_buttons() {
             }
         })
     });
+    $("#anchorUp").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/anchor/up",
+            type: "POST",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#anchorForward").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/anchor/forward",
+            type: "POST",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#anchorReverse").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/anchor/reverse",
+            type: "POST",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#anchorStop").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/anchor/stop",
+            type: "POST",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
     //$("#myButton").html("Off");
 }
 
