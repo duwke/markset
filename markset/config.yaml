@@ -19,15 +19,15 @@ timeline:
 
 order: 
   - name: ' NSB'
-    color: 0x097969
+    color: 0x002200
     audio: sailing.mp3
     bitmap: bitmaps/nsb.bmp
   - name: ' NSA/C22'
     color: 0x0000FF
     color2: 0x6a0dad
     audio: some_song.mp3 
-  - name: ' Portsm'
-    color: 0x964B00
+  - name: ' PORTSM'
+    color: 0x662200
     audio: sailing.mp3
     bitmap: bitmaps/nsb.bmp
   - name: ' SPIN'
