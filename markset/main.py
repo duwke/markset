@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 
 import adafruit_framebuf
 from adafruit_pixel_framebuf import PixelFramebuffer
@@ -17,9 +18,14 @@ import led_test
 app = Quart(__name__)
 test = False
 
+anchor = anchorer.Anchorer()
+pixel_pin = board.D21
+pixel_width = 60
+pixel_height = 10
+pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.1, auto_write=False, pixel_order=neopixel.GRB)
+matrix = race_matrix.RaceMatrix(pixels, pixel_width, pixel_height)
+
 # Index page
-
-
 @app.route('/')
 async def index():
     return await send_from_directory('markset', 'index.html')
@@ -36,15 +42,11 @@ async def markset():
     return await send_from_directory('markset', 'markset.js')
 
 # Images
-
-
 @app.route('/images/<fn>')
 async def images(fn):
     return await send_from_directory('markset/static/images', fn)
 
 # pre-gzip all large files (>1k) and then send gzipped version
-
-
 @app.route('/js/<fn>')
 async def files_js(fn):
     resp = await send_from_directory('markset/static/js', '{}.gz'.format(fn))
@@ -53,15 +55,13 @@ async def files_js(fn):
 
 # The same for css files - e.g.
 # Raw version of bootstrap.min.css is about 146k, compare to gzipped version - 20k
-
-
 @app.route('/css/<fn>')
 async def files_css(fn):
     print("shit")
     resp = await send_from_directory('markset/static/css', '{}.gz'.format(fn))
     resp.headers['Content-Encoding'] = 'gzip'
     return resp
-
+    
 
 # RESTAPI: System status
 class Status():
@@ -93,13 +93,6 @@ class Status():
         return {'message': 'changed', 'value': data['status']}
 
 
-anchor = anchorer.Anchorer()
-fb = None
-pixel_pin = board.D21
-num_pixels = 600
-ORDER = neopixel.GRB
-pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=.2, auto_write=False, pixel_order=ORDER)
-matrix = race_matrix.RaceMatrix(pixels, 60, 10)
 
 
 @app.route('/api/leds', methods=['GET'])
@@ -134,6 +127,14 @@ async def anchor_api(mode):
             anchor.begin_reverse()
         return {'result': 'true'}
 
+async def start_countdown():
+    await asyncio.sleep(30.0)
+    matrix.begin_countdown(180)
+
+@app.before_serving
+async def startup():
+    app.add_background_task(start_countdown)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
+    
