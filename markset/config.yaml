@@ -20,22 +20,22 @@ timeline:
 order: 
   - name: ' NSB'
     color: 0x002200
-    audio: sailing.mp3
+    audio: danger_zone.mp3
     bitmap: bitmaps/nsb.bmp
   - name: ' NSA/C22'
     color: 0x0000FF
     color2: 0x6a0dad
-    audio: some_song.mp3 
+    audio: sample.wav 
   - name: ' PORTSM'
     color: 0x662200
-    audio: sailing.mp3
+    audio: sample.wav 
     bitmap: bitmaps/nsb.bmp
   - name: ' SPIN'
     color: 0xC29200
-    audio: some_song.mp3
+    audio: sample.wav 
   - name: ' J-22'
     color: 0xCC0000
-    audio: some_song.mp3
+    audio: sample.wav 
   - name: ' J-24'
     color: 0x590036
-    audio: some_song.mp3
+    audio: sample.wav
