@@ -15,13 +15,14 @@ class MODE(Enum):
     COUNTDOWN = 1
     SHOW_ORDER = 2
     RACING = 3
-class RaceMatrix:
+class RaceManager:
 ### a generic class for displaying 10x60 matrix.  Consumed by web and led display.
 
 
-    def __init__(self, race_matrix):
+    def __init__(self, race_matrix, horn):
         print("race matrix init")   
         self.leds_ = race_matrix
+        self.horn_ = horn
         self.seconds_countdown_ = 0
         self.current_task_ = None
         self.order_index_ = 0
@@ -78,11 +79,11 @@ class RaceMatrix:
         ### update based on remaining ticks.  If we are behind, don't sleep.
         while self.tick_index_ <  self.ticks_total_:
             if self.mode_ == MODE.COUNTDOWN:
-                self.count_down()
+                self.count_down_tick()
             if self.mode_ == MODE.SHOW_ORDER:
-                self.show_order()
+                self.show_order_tick()
             if self.mode_ == MODE.RACING:
-                self.show_racing()
+                self.racing_tick()
 
             self.tick_index_ += 1
 
@@ -97,15 +98,13 @@ class RaceMatrix:
                 logging.warn("ticks " + str(num_ticks) + "/" + str(self.ticks_total_))
                 await asyncio.sleep(mill_seconds_til_next_tick) 
         logging.warn("stop task")
-        self.framebuf_.fill(self.background_color_)
-        if self.pixels_ is not None:
-            self.copy_matrix_to_led()
+        self.leds_.fill_color(self.background_color_)
         self.current_task_ = None
         if self.mode_ == MODE.COUNTDOWN:
             self.begin_show_order()
 
 
-    def show_order(self):
+    def show_order_tick(self):
         # for each order, give 4 seconds pause, then scroll for 6?
         # determine bottom index (not the scroller), then top index, which will scroll
         # 
@@ -136,10 +135,10 @@ class RaceMatrix:
                 self.leds_.write_over_frame(str(top_index + 1) + "-" + self.config_['order'][top_index]['name'], 0xffffff, self.config_['order'][top_index]['color'], offset_x, 2)
 
 
-    def show_racing(self):
-        pass
+    def racing_tick(self):
+        self.horn_.play_tone(5)
 
-    def count_down(self):
+    def count_down_tick(self):
         # tick every second
         if (self.tick_index_ * self.seconds_per_tick_) % 1.0 == 0:
             self.seconds_countdown_ -= 1
@@ -153,36 +152,6 @@ class RaceMatrix:
             self.framebuf_.text(str(num_min) + ":" + str(seconds_remaining).zfill(2), 1, 1, self.fill_color_)
 
 
-
-
-    def display_big_number(self, offset, num, debug):
-        if self.framebuf_.height < 10:
-            raise Exception('numbers are currently 10 wide and 10 long')
-        for i in range(self.framebuf_.height):
-            bit_row = self.matrix_nums[num][i]
-            # the numbers are currently 10 leds wide
-            for j in range(9, -1, -1):
-                # git bit is reversed
-                # print(str(str(j) +  " " + str(bit_row) + " " + str(1 << j)))
-                if self.get_bit(bit_row, j) == 1:
-                    self.framebuf_.pixel(offset + (9 - j), i, self.fill_color_)
-                else:
-                    self.framebuf_.pixel(offset + (9 - j), i, self.background_color_)
-
-    def get_bit(self, value, bit_index):
-        # print(str(value) + " " + str(1 << bit_index) + " " + str(value & (1 << bit_index)))
-        return value & (1 << bit_index) == (1 << bit_index)
-
-    def get_matrix(self):
-        matrix_info = {}
-        matrix_info['rows'] = self.framebuf_.height
-        matrix_info['columns'] = self.framebuf_.width
-        matrix = []
-        for y in range(self.framebuf_.height):  
-            for x in range(self.framebuf_.width):  
-                matrix.append(self.framebuf_.pixel(x, y))
-        matrix_info['matrix_data'] = matrix
-        return matrix_info
 
 
         

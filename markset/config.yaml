@@ -1,22 +1,51 @@
 
-min_between_race: 1
-timeline:
-  - 1800.00:
-      audio: countdown.mp3
-      function: 'Countdown'
-      num_minutes: 15
-  - 1814.00:
+race_start: 1800
+prestart_timeline: # note this is a compressed timeline, this needs to be 315 min
+  - 120:
+      music: danger_zone.mp3
+      music_timeout: 10
+      function: Countdown
+  - 105:
+      music: siren.mp3
+      music_timeout: 5
+      function: ShowOrder
+  - 65:
+      function: FiveToots
+  - 60:
+      function: Countdown
+  - 30: 
+      music: siren.mp3
+      music_timeout: 5
+      function: ShowOrder
+  - 10:
       audio: tornado.mp3
-      function: 'Countdown'
-      num_minutes: 1
-  - 1814.50:
-      audio: ten_beeps.mp3
-      function: 'Countdown'
-      num_minutes: 0
-      num_seconds: 10
-  - 1815.00:
-      function: 'BeginRacing'
-
+      function: Countdown
+      music_timeout: 4
+  - 5:
+      function: CountdownToots
+  - 0:
+      function: BeginRace
+class_timeline: # note this is a compressed timeline, this needs to be 3 min
+  - 90:  
+      function: ClassFlagUp
+  - 75:  
+      function: ShowOrderQuick
+  - 70:
+      function: PrepFlageUp
+  - 65:  
+      function: ShowOrderQuick
+  - 45:
+      function: PrepFlageDown
+  - 40:  
+      function: ShowOrderQuick
+  - 30:
+      function: ThreeToots
+  - 20:
+      function: TwoToots
+  - 10:
+      function: OneToot
+  - 5:
+      function: CountdownToots
 order: 
   - name: ' NSB'
     color: 0x002200

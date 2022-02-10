@@ -159,6 +159,8 @@ class RaceMatrix:
 
     def fill_color(self, c):
         self.framebuf_.fill(c)
+        if self.pixels_ is not None:
+            self.copy_matrix_to_led()
     
     ''' x from left, y from top, c = color ffffff '''
     def fill_text(self, text, x, y, c):
