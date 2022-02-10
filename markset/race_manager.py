@@ -45,7 +45,7 @@ class RaceManager:
             except yaml.YAMLError as exc:
                 print(exc)
         num_seconds = 180 * len(self.config_['order'])
-        self.begin_timer_(num_seconds)
+        self.begin_timer_(1)
 
     def begin_show_order(self):
         # set mode
@@ -83,12 +83,11 @@ class RaceManager:
             if self.mode_ == MODE.SHOW_ORDER:
                 self.show_order_tick()
             if self.mode_ == MODE.RACING:
-                self.racing_tick()
+                await self.racing_tick()
 
             self.tick_index_ += 1
 
-            if self.pixels_ is not None:
-                self.copy_matrix_to_led()
+            self.leds_.copy_matrix_to_led()
 
             duration = time.time() - self.start_time_
             num_ticks = int(duration / self.seconds_per_tick_)
@@ -135,8 +134,10 @@ class RaceManager:
                 self.leds_.write_over_frame(str(top_index + 1) + "-" + self.config_['order'][top_index]['name'], 0xffffff, self.config_['order'][top_index]['color'], offset_x, 2)
 
 
-    def racing_tick(self):
-        self.horn_.play_tone(5)
+    async def racing_tick(self):
+        await self.horn_.play_tone(5)
+        self.mode_ = MODE.WAITING
+        self.current_task_ = None
 
     def count_down_tick(self):
         # tick every second

@@ -11,8 +11,9 @@ import socket
 
 
 import anchorer
+import horn
 import race_matrix
-import led_test
+import race_manager
 
 
 app = Quart(__name__)
@@ -24,6 +25,7 @@ pixel_width = 60
 pixel_height = 10
 pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.1, auto_write=False, pixel_order=neopixel.GRB)
 matrix = race_matrix.RaceMatrix(pixels, pixel_width, pixel_height)
+race_manager = race_manager.RaceManager(matrix, horn.Horn())
 
 # Index page
 @app.route('/')
@@ -106,11 +108,11 @@ async def led_api():
 async def race_api(mode):
     if request.method == 'POST':
         if mode == "count_down":
-            matrix.begin_countdown(180)
+            race_manager.begin_countdown(180)
         elif mode == "show_order":
-            matrix.begin_show_order()
+            race_manager.begin_show_order()
         elif mode == "begin_race":
-            matrix.begin_racing()
+            race_manager.begin_racing()
         return {'result': 'true'}
 
 
@@ -129,7 +131,7 @@ async def anchor_api(mode):
 
 async def start_countdown():
     await asyncio.sleep(30.0)
-    matrix.begin_countdown(180)
+    race_manager.begin_countdown(180)
 
 @app.before_serving
 async def startup():

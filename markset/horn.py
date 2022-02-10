@@ -2,6 +2,7 @@ import asyncio
 import pygame
 import numpy
 import time
+import logging
 
 
 class Horn:
@@ -32,6 +33,7 @@ class Horn:
 		pygame.mixer.music.stop()
 
 	async def play_tone(self, timeout):
+		logging.warn("Play tone")
 
 		# 4096 : the peak ; volume ; loudness
 		# 440 : the frequency in hz
@@ -40,13 +42,17 @@ class Horn:
 		arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * 440 * x / self.sampleRate_) for x in range(0, self.sampleRate_)]).astype(numpy.int16)
 		sound = pygame.sndarray.make_sound(arr)
 		# ?not so sure? -1 means loop unlimited times
-		sound.play(-1)
+		channel = sound.play(-1)
+		channel.set_volume(1.0,1.0)
 		
 		start = time.time()
 		elapsed_time = time.time() - start
+		logging.warn("Playing " + str(elapsed_time) + " " + str(timeout))
+		logging.warn("Playing " + str(pygame.mixer.music.get_busy()))
 
-		while pygame.mixer.music.get_busy() == True and elapsed_time < timeout:
+		while elapsed_time < timeout:
+			logging.warn("Playing")
 			await asyncio.sleep(0.5)
 			elapsed_time = time.time() - start
 		
-		pygame.mixer.music.stop()
+		sound.stop()

@@ -146,6 +146,8 @@ class RaceMatrix:
 
     
     def copy_matrix_to_led(self):
+        if self.pixels_ == None:
+            return
         # start at top left
         for y in range(self.framebuf_.height):
             led_matrix_y = y
