@@ -1,30 +1,25 @@
 
 race_start: 1800
-prestart_timeline: # note this is a compressed timeline, this needs to be 315 min
+prestart_timeline: # note this is a compressed timeline, this needs to be 15 min
   - 120:
       music: danger_zone.mp3
       music_timeout: 10
-      function: Countdown
   - 105:
+      function: ShowOrder
       music: siren.mp3
       music_timeout: 5
-      function: ShowOrder
   - 65:
-      function: FiveToots
-  - 60:
-      function: Countdown
+      music: five_toots.mp3
+      music_timeout: 7  #five short and one long
   - 30: 
       music: siren.mp3
       music_timeout: 5
-      function: ShowOrder
   - 10:
-      audio: tornado.mp3
-      function: Countdown
-      music_timeout: 4
+      music: tornado.mp3
+      music_timeout: 3
   - 5:
-      function: CountdownToots
-  - 0:
-      function: BeginRace
+      music: five_toots.mp3
+      music_timeout: 7  #five short and one long
 class_timeline: # note this is a compressed timeline, this needs to be 3 min
   - 90:  
       function: ClassFlagUp
@@ -32,39 +27,47 @@ class_timeline: # note this is a compressed timeline, this needs to be 3 min
       function: ShowOrderQuick
   - 70:
       function: PrepFlageUp
+      music: long_toot.mp3
+      music_timeout: 4 
   - 65:  
       function: ShowOrderQuick
   - 45:
       function: PrepFlageDown
+      music: long_toot.mp3
+      music_timeout: 4 
   - 40:  
       function: ShowOrderQuick
   - 30:
-      function: ThreeToots
+      music: three_toots.mp3
+      music_timeout: 4  
   - 20:
-      function: TwoToots
+      music: two_toots.mp3
+      music_timeout: 3  
   - 10:
-      function: OneToot
+      music: one_toot.mp3
+      music_timeout: 2  
   - 5:
-      function: CountdownToots
+      music: five_toots.mp3
+      music_timeout: 7  #five short and one long
 order: 
   - name: ' NSB'
     color: 0x002200
-    audio: danger_zone.mp3
+    music: danger_zone.mp3
     bitmap: bitmaps/nsb.bmp
   - name: ' NSA/C22'
     color: 0x0000FF
     color2: 0x6a0dad
-    audio: sample.wav 
+    music: sample.wav 
   - name: ' PORTSM'
     color: 0x662200
-    audio: sample.wav 
+    music: sample.wav 
     bitmap: bitmaps/nsb.bmp
   - name: ' SPIN'
     color: 0xC29200
-    audio: sample.wav 
+    music: sample.wav 
   - name: ' J-22'
     color: 0xCC0000
-    audio: sample.wav 
+    music: sample.wav 
   - name: ' J-24'
     color: 0x590036
-    audio: sample.wav
+    music: sample.wav

@@ -164,6 +164,15 @@ class RaceMatrix:
         if self.pixels_ is not None:
             self.copy_matrix_to_led()
     
+    def show_prepflag_left(self, c):
+        for y in range(self.framebuf_.height):
+            for x in range(self.framebuf_.width / 2):
+                if x > 2 and x < range(self.framebuf_.width / 2) - 2 and y > 2 and y < range(self.framebuf_.height) - 2:
+                    self.pixels_[x, y] = 0xFFFFFF
+                else:
+                    self.pixels_[x, y] = 0x0000FF
+
+    
     ''' x from left, y from top, c = color ffffff '''
     def fill_text(self, text, x, y, c):
         self.framebuf_.text(text, x, y, c)
