@@ -23,28 +23,34 @@ prestart_timeline: # note this is a compressed timeline, this needs to be 15 min
 class_timeline: # note this is a compressed timeline, this needs to be 3 min
   - 90:  
       function: ClassFlagUp
+  - 89:  
+      function: ClassTunes # this is dumb
   - 75:  
       function: ShowOrderQuick
-  - 70:
+  - 69:  
+      function: ClassFlagUp # this is dumb
+  - 65:
       function: PrepFlageUp
       music: long_toot.mp3
       music_timeout: 4 
-  - 65:  
+  - 60:  
       function: ShowOrderQuick
+  - 54:  
+      function: PrepFlageUp
   - 45:
       function: PrepFlageDown
       music: long_toot.mp3
       music_timeout: 4 
   - 40:  
       function: ShowOrderQuick
+  - 39:
+      function: PrepFlageDown
   - 30:
-      music: three_toots.mp3
-      music_timeout: 4  
-  - 20:
+      music: three_toots.mp3 self.horn_.play(sail_class.music)
       music: two_toots.mp3
       music_timeout: 3  
   - 10:
-      music: one_toot.mp3
+      music: long_toot.mp3
       music_timeout: 2  
   - 5:
       music: five_toots.mp3

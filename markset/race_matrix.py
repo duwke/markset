@@ -138,13 +138,12 @@ class RaceMatrix:
             ]
         ]
 
+    def width(self):
+        return self.framebuf_.width
 
     def clear(self):
         self.framebuf_.fill(self.background_color_)
-        if self.pixels_ is not None:
-            self.copy_matrix_to_led()
 
-    
     def copy_matrix_to_led(self):
         if self.pixels_ == None:
             return
@@ -161,16 +160,14 @@ class RaceMatrix:
 
     def fill_color(self, c):
         self.framebuf_.fill(c)
-        if self.pixels_ is not None:
-            self.copy_matrix_to_led()
     
-    def show_prepflag_left(self, c):
+    def show_prepflag_left(self):
         for y in range(self.framebuf_.height):
-            for x in range(self.framebuf_.width / 2):
-                if x > 2 and x < range(self.framebuf_.width / 2) - 2 and y > 2 and y < range(self.framebuf_.height) - 2:
-                    self.pixels_[x, y] = 0xFFFFFF
+            for x in range(int(self.framebuf_.width / 2)):
+                if x >= 8 and x < int(self.framebuf_.width / 2) - 8 and y >= 2 and y < self.framebuf_.height - 2:
+                    self.framebuf_.pixel(x, y, 0xFFFFFF)
                 else:
-                    self.pixels_[x, y] = 0x0000FF
+                    self.framebuf_.pixel(x, y, 0x0000FF)
 
     
     ''' x from left, y from top, c = color ffffff '''

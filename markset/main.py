@@ -9,8 +9,6 @@ import neopixel
 from quart import Quart, render_template, request, redirect, url_for, send_from_directory
 import socket
 
-
-import anchorer
 import horn
 import race_matrix
 import race_manager
@@ -19,7 +17,6 @@ import race_manager
 app = Quart(__name__)
 test = False
 
-anchor = anchorer.Anchorer()
 pixel_pin = board.D21
 pixel_width = 60
 pixel_height = 10
@@ -130,12 +127,15 @@ async def anchor_api(mode):
         return {'result': 'true'}
 
 async def start_countdown():
-    await asyncio.sleep(30.0)
     race_manager.begin_countdown(180)
 
 @app.before_serving
 async def startup():
     app.add_background_task(start_countdown)
+
+@app.after_serving
+async def shutdown():
+    race_manager.shutdown()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
