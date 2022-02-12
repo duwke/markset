@@ -173,7 +173,7 @@ class RaceManager:
 
             if self.timeline_function_ == "ShowOrder" or self.timeline_function_ == "ShowOrderQuick": 
                 self.show_order_tick()
-            elif self.timeline_function_ == "ClassFlagUp" or self.timeline_function_ == "PrepFlageUp" or self.timeline_function_ == "PrepFlageDown": 
+            elif self.timeline_function_ == "ClassTunes" or self.timeline_function_ == "ClassFlagUp" or self.timeline_function_ == "PrepFlageUp" or self.timeline_function_ == "PrepFlageDown": 
                 self.count_down_tick()
                 logging.warn("classflag")
                 # show the class flag to the right

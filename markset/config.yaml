@@ -3,14 +3,14 @@ race_start: 1800
 prestart_timeline: # note this is a compressed timeline, this needs to be 15 min
   - 120:
       music: danger_zone.mp3
-      music_timeout: 10
+      music_timeout: 26
   - 105:
       function: ShowOrder
       music: siren.mp3
       music_timeout: 5
-  - 65:
-      music: five_toots.mp3
-      music_timeout: 7  #five short and one long
+  - 60:
+      music: one_toot.mp3
+      music_timeout: 2
   - 30: 
       music: siren.mp3
       music_timeout: 5
@@ -41,12 +41,12 @@ class_timeline: # note this is a compressed timeline, this needs to be 3 min
       function: PrepFlageDown
       music: long_toot.mp3
       music_timeout: 4 
-  - 40:  
-      function: ShowOrderQuick
   - 39:
       function: PrepFlageDown
   - 30:
-      music: three_toots.mp3 self.horn_.play(sail_class.music)
+      music: three_toots.mp3 
+      music_timeout: 4  
+  - 20:
       music: two_toots.mp3
       music_timeout: 3  
   - 10:
