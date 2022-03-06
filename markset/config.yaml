@@ -1,48 +1,79 @@
 
 race_start: 1800
 prestart_timeline: # note this is a compressed timeline, this needs to be 15 min
-  - 120:
+  - 900:
+      function: ShowOrder
+  - 899:
       music: danger_zone.mp3
-      music_timeout: 26
-  - 105:
+      music_timeout: 59
+  - 840:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 780:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 720:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 660:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 600:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 540:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 480:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 420:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 360:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 300:
       function: ShowOrder
       music: siren.mp3
-      music_timeout: 5
-  - 60:
+      music_timeout: 10 
+  - 240:
+      function: ShowOrder
       music: one_toot.mp3
-      music_timeout: 2
-  - 30: 
+  - 180:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 120:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 60:
+      function: ShowOrder
       music: siren.mp3
-      music_timeout: 5
-  - 10:
-      music: tornado.mp3
-      music_timeout: 3
+      music_timeout: 10 
   - 5:
       music: five_toots.mp3
       music_timeout: 7  #five short and one long
 class_timeline: # note this is a compressed timeline, this needs to be 3 min
-  - 90:  
+  - 180:  
       function: ClassFlagUp
-  - 89:  
-      function: ClassTunes # this is dumb
-  - 75:  
+  - 179:  
+      function: ClassTunes 
+  - 150:  
       function: ShowOrderQuick
-  - 69:  
+  - 144:  
       function: ClassFlagUp # this is dumb
-  - 65:
+  - 120:
       function: PrepFlageUp
       music: long_toot.mp3
       music_timeout: 4 
-  - 60:  
+  - 90:  
       function: ShowOrderQuick
-  - 54:  
+  - 84:  
       function: PrepFlageUp
-  - 45:
+  - 60:
       function: PrepFlageDown
       music: long_toot.mp3
       music_timeout: 4 
-  - 39:
-      function: PrepFlageDown
   - 30:
       music: three_toots.mp3 
       music_timeout: 4  
@@ -50,11 +81,12 @@ class_timeline: # note this is a compressed timeline, this needs to be 3 min
       music: two_toots.mp3
       music_timeout: 3  
   - 10:
-      music: long_toot.mp3
+      music: one_toot.mp3
       music_timeout: 2  
   - 5:
       music: five_toots.mp3
       music_timeout: 7  #five short and one long
+
 order: 
   - name: ' NSB'
     color: 0x002200
@@ -66,7 +98,7 @@ order:
     music: sample.wav 
   - name: ' PORTSM'
     color: 0x662200
-    music: sample.wav 
+    music: Thunderstruck.mp3 
     bitmap: bitmaps/nsb.bmp
   - name: ' SPIN'
     color: 0xC29200

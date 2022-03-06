@@ -8,6 +8,8 @@ import gc
 import neopixel
 from quart import Quart, render_template, request, redirect, url_for, send_from_directory
 import socket
+import logging
+import sys, os
 
 import horn
 import race_matrix
@@ -20,7 +22,7 @@ test = False
 pixel_pin = board.D21
 pixel_width = 60
 pixel_height = 10
-pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.5, auto_write=False, pixel_order=neopixel.GRB)
+pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.1, auto_write=False, pixel_order=neopixel.GRB)
 matrix = race_matrix.RaceMatrix(pixels, pixel_width, pixel_height)
 race_manager = race_manager.RaceManager(matrix, horn.Horn())
 
@@ -103,14 +105,28 @@ async def led_api():
 
 @app.route('/api/race/<mode>', methods=['POST'])
 async def race_api(mode):
-    if request.method == 'POST':
-        if mode == "count_down":
-            race_manager.begin_countdown(180)
-        elif mode == "show_order":
-            race_manager.begin_show_order()
-        elif mode == "begin_race":
-            race_manager.begin_racing()
-        return {'result': 'true'}
+    try:
+        if request.method == 'POST':
+            if mode == "count_down":
+                race_manager.begin_countdown(180)
+            elif mode == "show_order":
+                race_manager.begin_show_order()
+            elif mode == "begin_race":
+                race_manager.begin_racing()
+            elif mode == "show_message":
+                logging.warning("data " + str(await request.get_data()))
+                message = (await request.get_data()).decode('utf-8')
+                logging.warning("got message " + str(message))
+                race_manager.begin_message(message)
+            elif mode == "delay":
+                race_manager.begin_delay()
+            return {'result': 'true'}
+    except Exception as inst:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        print(str(inst))
+        return {'result': 'false'}
 
 
 @app.route('/api/anchor/<mode>', methods=['POST'])

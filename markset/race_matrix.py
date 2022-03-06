@@ -196,6 +196,14 @@ class RaceMatrix:
                 else:
                     self.framebuf_.pixel(offset + (9 - j), i, self.background_color_)
 
+    def cat_in_hat(self):
+        for y in range(self.framebuf_.height):
+            for x in range(int(self.framebuf_.width)):
+                if x % 6 < 3:
+                    self.framebuf_.pixel(x, y, 0xFF0000)
+                else:
+                    self.framebuf_.pixel(x, y, 0xFFFFFF)
+
     def get_bit(self, value, bit_index):
         # print(str(value) + " " + str(1 << bit_index) + " " + str(value & (1 << bit_index)))
         return value & (1 << bit_index) == (1 << bit_index)
