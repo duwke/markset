@@ -308,8 +308,9 @@ class RaceManager:
     def delay_tick(self):
         num_seconds_in = self.tick_index_ / self.ticks_per_second_
 
-        self.horn_.play("siren.mp3")
-        self.music_countdown_ = 5
+        if self.tick_index_ == 0:
+            self.horn_.play("ambulance.mp3")
+            self.music_countdown_ = 10
 
         self.leds_.clear()
 

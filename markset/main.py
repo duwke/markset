@@ -14,6 +14,7 @@ import sys, os
 import horn
 import race_matrix
 import race_manager
+from boat_control import BoatControl
 
 
 app = Quart(__name__)
@@ -25,6 +26,7 @@ pixel_height = 10
 pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.1, auto_write=False, pixel_order=neopixel.GRB)
 matrix = race_matrix.RaceMatrix(pixels, pixel_width, pixel_height)
 race_manager = race_manager.RaceManager(matrix, horn.Horn())
+boat = BoatControl()
 
 # Index page
 @app.route('/')
@@ -140,6 +142,17 @@ async def anchor_api(mode):
             anchor.begin_forward()
         elif mode == "reverse":
             anchor.begin_reverse()
+        return {'result': 'true'}
+
+
+@app.route('/api/boat/<command>', methods=['POST'])
+async def boat_control_api(command):
+    logging.warning("boat control " + command)
+    if request.method == 'POST':
+        if command == "arm":
+            boat.arm()
+        elif command == "disarm":
+            boat.disarm()
         return {'result': 'true'}
 
 async def start_countdown():
