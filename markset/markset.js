@@ -144,9 +144,8 @@ function update_buttons() {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/status",
+            url: "/api/computer/shutdown",
             type: "PUT",
-            data: { "status": "off" },
             // contentType: 'application/json',
             success: function (result) {
                 // on success - reload table

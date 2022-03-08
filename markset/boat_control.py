@@ -8,14 +8,15 @@ class BoatControl:
 ### a generic class for displaying 10x60 matrix.  Consumed by web and led display.
 
     def __init__(self):
-        self.master_ = mavutil.mavlink_connection('udpout:10.0.0.2:14550', 57600, 253)
-        self.wait_conn()
-        logging.warning("mavproxy connection " + str(self.master_))
+        self.connected_ = False
 
-    def wait_conn(self):
+    def connect(self):
         """
         Sends a ping to stabilish the UDP communication and awaits for a response
         """
+
+        self.master_ = mavutil.mavlink_connection('udpout:0.0.0.0:14550', 57600, 253)
+        logging.warning("mavproxy connection " + str(self.master_))
         msg = None
         while not msg:
             self.master_.mav.ping_send(
@@ -63,19 +64,18 @@ class BoatControl:
 
 
     def arm(self):
+        if not self.connected_:
+            self.connect()
         print('motors armed?', self.master_.motors_armed())
 
         time.sleep(1)
 
         print('arming throttle...')
 
-        p2 = 0
-
-
         self.run_cmd(
             mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM,  # command
             1,  # param1 (1 to indicate arm)
-            p2,  # param2  (all other params meaningless)
+            0,  # param2  (0 = arm all other params meaningless)
             0,  # param3
             0,  # param4
             0,  # param5
@@ -88,14 +88,15 @@ class BoatControl:
         print('motors armed:', self.master_.motors_armed())
 
     def disarm(self):
-        p2 = 0
+        if not self.connected_:
+            self.connect()
 
         print('attempt to disarm rover')
 
         self.run_cmd(
             mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM,  # command
             0,  # param1 (1 to indicate arm)
-            p2,  # param2  (all other params meaningless)
+            0,  # param2  (0 = arm all other params meaningless)
             0,  # param3
             0,  # param4
             0,  # param5

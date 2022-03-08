@@ -145,6 +145,17 @@ async def anchor_api(mode):
         return {'result': 'true'}
 
 
+@app.route('/api/computer/<command>', methods=['POST'])
+async def computer_control_api(command):
+    logging.warning("computer control " + command)
+    if request.method == 'POST':
+        if command == "shutdown":
+            matrix.clear()
+            os.system('sudo shutdown -r now')
+        elif command == "restart":
+            os.system('sudo restart -r now')
+        return {'result': 'true'}
+
 @app.route('/api/boat/<command>', methods=['POST'])
 async def boat_control_api(command):
     logging.warning("boat control " + command)
