@@ -151,7 +151,8 @@ async def computer_control_api(command):
     if request.method == 'POST':
         if command == "shutdown":
             matrix.clear()
-            os.system('sudo shutdown -r now')
+            logging.warning("clear? " + command)
+            os.system('sudo shutdown now')
         elif command == "restart":
             os.system('sudo restart -r now')
         return {'result': 'true'}

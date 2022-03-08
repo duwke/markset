@@ -1,0 +1,21 @@
+version: "2.3"
+
+services:
+
+  mavros:
+    container_name: mavros
+    image: markset-mavros:latest
+    command: 
+    stdin_open: true
+    tty: true
+    network_mode: "host"
+    privileged: true
+    devices:
+      - "/dev/snd/seq:/dev/snd/seq"
+    volumes:
+      - /dev:/dev
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_X11_NO_MITSHM: 1
+      FCUURL: "tcp://192.168.1.113:5760"
