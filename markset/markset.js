@@ -126,9 +126,8 @@ function update_buttons() {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/status",
-            type: "PUT",
-            data: { "status": "restart" },
+            url: "/api/computer/restart",
+            type: "POST",
             // contentType: 'application/json',
             success: function (result) {
                 // on success - reload table
@@ -255,11 +254,11 @@ function update_buttons() {
             }
         })
     });
-    $("#anchorForward").click(function (e) {
+    $("#anchorDown").click(function (e) {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/anchor/forward",
+            url: "/api/anchor/down",
             type: "POST",
             // contentType: 'application/json',
             success: function (result) {
@@ -271,11 +270,11 @@ function update_buttons() {
             }
         })
     });
-    $("#anchorReverse").click(function (e) {
+    $("#anchorDisable").click(function (e) {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/anchor/reverse",
+            url: "/api/anchor/disable",
             type: "POST",
             // contentType: 'application/json',
             success: function (result) {
@@ -287,11 +286,11 @@ function update_buttons() {
             }
         })
     });
-    $("#anchorStop").click(function (e) {
+    $("#anchorHold").click(function (e) {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/anchor/stop",
+            url: "/api/anchor/hold",
             type: "POST",
             // contentType: 'application/json',
             success: function (result) {
@@ -338,30 +337,22 @@ function update_buttons() {
     //$("#myButton").html("Off");
 }
 
-function on_hash_change() {
-    var hash = window.location.hash;
-    if (hash == '') {
-        hash = '#status';
-    }
-    console.log("Hash change", hash);
-    $.getJSON("api/" + hash.substring(1), function (data) {
-        if (hash == "#status") {
-            update_status(data)
-        }
-        if (hash == "#gpio") {
-            update_gpio(data);
-        }
+function poll_anchor_status() {
+    $.getJSON("api/anchor/status", (data) => {
+        $("#anchor_status").text(data.mode);
+        setTimeout(poll_anchor_status, 1000);
+    }).fail(() => {
+        $("#anchor_status").text("fail");
+        setTimeout(poll_anchor_status, 1000);
     });
-    $("main").hide()
-    $(hash).show();
 }
+
 
 function load() {
     debugger;
     update_buttons();
     setInterval(poll_led_matrix, 200);
-    on_hash_change();
+    setTimeout(poll_anchor_status, 1000);
 }
 
-window.onhashchange = on_hash_change;
 $(document).ready(load);

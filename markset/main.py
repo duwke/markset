@@ -1,7 +1,4 @@
 #! /usr/bin/env python3
-
-import adafruit_framebuf
-from adafruit_pixel_framebuf import PixelFramebuffer
 import asyncio
 import board
 import gc
@@ -10,12 +7,18 @@ from quart import Quart, render_template, request, redirect, url_for, send_from_
 import socket
 import logging
 import sys, os
+import aiohttp
 
 import horn
 import race_matrix
 import race_manager
 from boat_control import BoatControl
 
+import datetime 
+from apscheduler.schedulers.background import BackgroundScheduler 
+
+sched = BackgroundScheduler()
+sched.start()
 
 app = Quart(__name__)
 test = False
@@ -23,7 +26,7 @@ test = False
 pixel_pin = board.D21
 pixel_width = 60
 pixel_height = 10
-pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.1, auto_write=False, pixel_order=neopixel.GRB)
+pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.9, auto_write=False, pixel_order=neopixel.GRB)
 matrix = race_matrix.RaceMatrix(pixels, pixel_width, pixel_height)
 race_manager = race_manager.RaceManager(matrix, horn.Horn())
 boat = BoatControl()
@@ -134,16 +137,22 @@ async def race_api(mode):
 @app.route('/api/anchor/<mode>', methods=['POST'])
 async def anchor_api(mode):
     if request.method == 'POST':
-        if mode == "up":
-            await anchor.move()
-        if mode == "stop":
-            anchor.stop()
-        elif mode == "forward":
-            anchor.begin_forward()
-        elif mode == "reverse":
-            anchor.begin_reverse()
-        return {'result': 'true'}
+        async with aiohttp.ClientSession() as session:
+            async with session.post('http://192.168.4.1/api/anchor/' + mode, timeout=5) as response:
+                return {'result': 'true'}
 
+@app.route('/api/anchor/status', methods=['GET'])
+async def ancho_status_api():
+    async with aiohttp.ClientSession() as session:
+        async with session.get('http://192.168.4.1/api/anchor/status', timeout=5) as response:
+
+            print("Status:", response.status)
+            print("Content-type:", response.headers['content-type'])
+
+            mode = await response.json()
+            print("Body:", mode)
+            return mode
+    
 
 @app.route('/api/computer/<command>', methods=['POST'])
 async def computer_control_api(command):
@@ -151,10 +160,10 @@ async def computer_control_api(command):
     if request.method == 'POST':
         if command == "shutdown":
             matrix.clear()
-            logging.warning("clear? " + command)
+            matrix.copy_matrix_to_led()
             os.system('sudo shutdown now')
         elif command == "restart":
-            os.system('sudo restart -r now')
+            os.system('sudo reboot now')
         return {'result': 'true'}
 
 @app.route('/api/boat/<command>', methods=['POST'])
@@ -177,6 +186,18 @@ async def startup():
 @app.after_serving
 async def shutdown():
     race_manager.shutdown()
+
+# Define the function that is to be executed
+def my_job():
+    race_manager.begin_racing()
+    
+exec_date = datetime.datetime.today()
+# The job will be executed on November 6th, 2009
+if exec_date.weekday() != 2:
+    exec_date = exec_date + datetime.timedelta(days=1)
+
+# Store the job in a variable in case we want to cancel it
+sched.add_job(my_job, 'cron', day_of_week='wed', hour='18', minute='00')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

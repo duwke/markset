@@ -21,7 +21,6 @@
         padding-top: 5rem;
       }
       main {
-        display: none;
       }
       #led_matrix tr td{
         padding: 0px;
@@ -65,57 +64,8 @@
               <button type='button' id="webserverOff" class='btn btn-success' >Turn Off</button>
               <button type='button' id="webserverRestart" class='btn btn-success' >Restart</button>
 
-              <h5 class="card-title">Memory</h5>
-              <table class="table">
-                <tbody>
-                  <tr>
-                    <td>Free</td>
-                    <td id=mem_free style="font-weight: bold">...</td>
-                  </tr>
-                  <tr>
-                    <td>Allocated</td>
-                    <td id=mem_alloc>...</td>
-                  </tr>
-                  <tr>
-                    <td>Total</td>
-                    <td id=mem_total>...</td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
-        </div>
-
-        <div class="col-sm-3">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Network</h5>
-              <table class="table">
-                <tbody>
-                  <tr>
-                    <td>IP</td>
-                    <td id=ip>...</td>
-                  </tr>
-                  <tr>
-                    <td>NetMask</td>
-                    <td id=netmask>...</td>
-                  </tr>
-                  <tr>
-                    <td>Gateway</td>
-                    <td id=gateway>...</td>
-                  </tr>
-                  <tr>
-                    <td>DNS</td>
-                    <td id=dns>...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-sm-3">
-          
         </div>
 
       </div>
@@ -128,10 +78,11 @@
       </div>
       <div class="row">
 
-        <h5 class="card-title">Anchor 
-          <button type='button' id="anchorReverse" class='btn btn-success' >Reverse</button>
-          <button type='button' id="anchorForward" class='btn btn-success' >Forward</button>
-          <button type='button' id="anchorStop" class='btn btn-success' >Stop</button>
+        <h5 class="card-title">Anchor <div id="anchor_status"></div>
+          <button type='button' id="anchorUp" class='btn btn-success' >Up</button>
+          <button type='button' id="anchorDown" class='btn btn-success' >Down</button>
+          <button type='button' id="anchorHold" class='btn btn-success' >Hold</button>
+          <button type='button' id="anchorDisable" class='btn btn-success' >Disable</button>
         </h5>
       </div>
       <div class="row">
