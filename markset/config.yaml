@@ -97,7 +97,7 @@ order:
     color2: 0x6a0dad
     music: sample.wav 
   - name: ' PORTSM'
-    color: 0x662200
+    color: 0x590036
     music: Thunderstruck.mp3 
     bitmap: bitmaps/nsb.bmp
   - name: ' SPIN'
@@ -107,5 +107,5 @@ order:
     color: 0xCC0000
     music: sample.wav 
   - name: ' J-24'
-    color: 0x590036
+    color: 0x662200
     music: sample.wav
