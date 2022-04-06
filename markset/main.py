@@ -28,7 +28,8 @@ pixel_width = 60
 pixel_height = 10
 pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.9, auto_write=False, pixel_order=neopixel.GRB)
 matrix = race_matrix.RaceMatrix(pixels, pixel_width, pixel_height)
-race_manager = race_manager.RaceManager(matrix, horn.Horn())
+horn = horn.Horn()
+race_manager = race_manager.RaceManager(matrix, horn)
 boat = BoatControl()
 
 # Index page
@@ -117,14 +118,23 @@ async def race_api(mode):
             elif mode == "show_order":
                 race_manager.begin_show_order()
             elif mode == "begin_race":
-                race_manager.begin_racing()
+                prestart = (await request.get_data()).decode('utf-8')
+                logging.warning("got message " + str(prestart))
+                race_manager.begin_racing(prestartMin=int(prestart))
+            elif mode == "single_class":
+                single_class = (await request.get_data()).decode('utf-8')
+                logging.warning("got message " + str(single_class))
+                race_manager.begin_single_class_racing(single_class)
             elif mode == "show_message":
                 logging.warning("data " + str(await request.get_data()))
                 message = (await request.get_data()).decode('utf-8')
                 logging.warning("got message " + str(message))
                 race_manager.begin_message(message)
             elif mode == "delay":
-                race_manager.begin_delay()
+                logging.warning("data " + str(await request.get_data()))
+                delay = (await request.get_data()).decode('utf-8')
+                logging.warning("got message " + str(delay))
+                race_manager.begin_delay(int(delay))
             return {'result': 'true'}
     except Exception as inst:
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -174,6 +184,8 @@ async def boat_control_api(command):
             boat.arm()
         elif command == "disarm":
             boat.disarm()
+        elif command == "horn":
+            horn.test()
         return {'result': 'true'}
 
 async def start_countdown():
@@ -192,7 +204,7 @@ def my_job():
     race_manager.begin_racing()
     
 exec_date = datetime.datetime.today()
-# The job will be executed on November 6th, 2009
+#execute on wednesdays
 if exec_date.weekday() != 2:
     exec_date = exec_date + datetime.timedelta(days=1)
 

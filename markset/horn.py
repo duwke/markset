@@ -9,8 +9,10 @@ class Horn:
 
 	def play(self, song):
 		pygame.mixer.music.load("/home/pi/workspace/markset/markset/music/" + song)
-		pygame.mixer.music.set_volume(0.9)
+		pygame.mixer.music.set_volume(1.0)
 		pygame.mixer.music.play()
+	def test(self):
+		self.play("sample.wav")
 
 	def stop(self):
 		pygame.mixer.music.stop()

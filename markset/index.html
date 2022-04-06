@@ -1,141 +1,164 @@
-
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <title>TinyWeb Static content example</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <!-- Dummy favicon. We don't want browser to send unwanted requests -->
-    <link rel="icon" type="image/gif" href="http://docs.micropython.org/en/v1.9.3/esp8266/_static/favicon.ico" />
+  <title>Markus</title>
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <!-- Dummy favicon. We don't want browser to send unwanted requests -->
+  <link rel="icon" type="image/gif" href="http://docs.micropython.org/en/v1.9.3/esp8266/_static/favicon.ico" />
 
-    <!-- TinyWeb styles -->
-    <style type="text/css">
-      body {
-        padding-top: 5rem;
-      }
-      main {
-      }
-      #led_matrix tr td{
-        padding: 0px;
-      }
-      #led_matrix {
-        background-color: gray;
-      }
-    </style>
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
 
-  </head>
+  <!-- TinyWeb styles -->
+  <style type="text/css">
+    body {
+      padding-top: 5rem;
+    }
 
-  <body>
+    main {}
 
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">TinyWeb</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    #led_matrix tr td {
+      padding: 0px;
+    }
 
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Status</a>
-          </li>
-           <li class="nav-item">
-            <a class="nav-link" href="#gpio">GPIO</a>
-          </li>
-        </ul>
+    #led_matrix {
+      background-color: gray;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">MARKus</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+      aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+  </nav>
+
+  <main role="main" class="container" id="status">
+
+
+
+    <h2 >Racing
+    </h2>
+    <div class="row">
+      <div class="col-lg-3">
+        <select id="prestartTime" class="form-control">
+          <option value="15">15 min</option>
+          <option value="10">10 min</option>
+          <option value="5">5 min</option>
+          <option value="2">2 min</option>
+          <option value="1">1 min</option>
+        </select> 
       </div>
-    </nav>
-
-    <main role="main" class="container" id="status">
-      <div class="row">
-
-        <div class="col-sm-3 offset-md-1">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Lights</h5>
-              <button type='button' id="lights" class='btn btn-success' >Turn On</button>
-              <h5 class="card-title">Webserver</h5>
-              <button type='button' id="webserverOff" class='btn btn-success' >Turn Off</button>
-              <button type='button' id="webserverRestart" class='btn btn-success' >Restart</button>
-
-            </div>
-          </div>
-        </div>
-
+      <div class="col-lg-3  pb-3">
+        <button type='button' id="raceBegin" class='btn btn-success'>Begin Race</button>
+        <button type='button' id="showOrder" class='btn btn-success'>Show Order</button>
       </div>
-      <div class="row">
-
-        <h5 class="card-title">Boat 
-          <button type='button' id="boatArm" class='btn btn-success' >Arm</button>
-          <button type='button' id="boatDisarm" class='btn btn-success' >Disarm</button>
-        </h5>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 ">
+        <select id="singleClassData" class="form-control">
+          <option value="J-22">J-22</option>
+          <option value="NSB">NSB </option>
+          <option value="NSA/C22">NSA </option>
+          <option value="PORTSM">PORT</option>
+          <option value="SPIN">SPIN</option>
+        </select>
       </div>
-      <div class="row">
-
-        <h5 class="card-title">Anchor <div id="anchor_status"></div>
-          <button type='button' id="anchorUp" class='btn btn-success' >Up</button>
-          <button type='button' id="anchorDown" class='btn btn-success' >Down</button>
-          <button type='button' id="anchorHold" class='btn btn-success' >Hold</button>
-          <button type='button' id="anchorDisable" class='btn btn-success' >Disable</button>
-        </h5>
+      <div class="col-lg-2  pb-3">
+        <button type='button' id="singleClass" class='btn btn-success'>Start</button>
       </div>
-      <div class="row">
-
-        <h5 class="card-title">Racing 
-        </h5>
-          <button type='button' id="countDownBegin" class='btn btn-success' >Begin Countdown</button>
-          <button type='button' id="showOrder" class='btn btn-success' >Show Order</button>
-          <button type='button' id="raceBegin" class='btn btn-success' >Begin Race</button>
-          <button type='button' id="raceDelay" class='btn btn-warning' >Delay</button>
-          <button type='button' id="showMessage" class='btn btn-success' >Show Message</button>
-          <input id="txtMessage" ype="text" value="GBCA" />
-        <table class="table table-condensed">
-          <tbody id="led_matrix">
-          </tbody>
-        </table>
+    </div>
+    <div class="row"> 
+      <div class="col-lg-3">
+        <select id="delayTime" class="form-control">
+          <option value="1">1 min</option>
+          <option value="2">2 min</option>
+          <option value="5">5 min</option>
+          <option value="10">10 min</option>
+          <option value="15">15 min</option>
+        </select> 
       </div>
-
-    </main> <!-- of status -->
-
-
-    <main role="main" class="container" id="gpio">
-      <div class="row">
-
-        <div class="col-sm-6 offset-md-3">
-          <table class="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">GPIO #</th>
-                <th scope="col">MCU #</th>
-                <th scope="col">State</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody id=gpio_rows>
-              <tr>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
+      <div class="col-lg-1 pb-3">
+        <button type='button' id="raceDelay" class='btn btn-warning'>Delay</button>
       </div>
+    </div>
+    <div class="row">
+      <table class="table table-condensed">
+        <tbody id="led_matrix">
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="col-lg-3">
+        <input id="txtMessage" ype="text" value="http://GBCA.com/WNR" />
+      </div>
+      <div class="col-lg-2 pb-2">
+        <button type='button' id="showMessage" class='btn btn-success'>Show Message</button>
+      </div>
+    </div>
 
-    </main><!-- of gpio -->
+    <h5 class="card-title">Boat </h5>
+    <div class="row">
+      <div class="col-lg-2 pb-2">
+        <button type='button' id="boatArm" class='btn btn-success'>Arm</button>
+        <button type='button' id="boatDisarm" class='btn btn-success'>Disarm</button>
+      </div>
+    </div>
 
-    <!-- JQuery -->
-    <script src="/js/jquery-3.2.1.min.js"></script>
+    <h5 class="card-title">Anchor <span id="anchor_status"></span></h5>
+    <div class="row">
+      <div class="col pb-2">
+        <button type='button' id="anchorUp" class='btn btn-success'>Up</button>
+        <button type='button' id="anchorDown" class='btn btn-success'>Down</button>
+        <button type='button' id="anchorHold" class='btn btn-success'>Hold</button>
+        <button type='button' id="anchorDisable" class='btn btn-success'>Disable</button>
+      </div>
+    </div>
 
-    <script src="/markset.js" ></script>
+    <h5 class="card-title">Lights</h5>
+    <div class="row">
+      <div class="col pb-2">
+        <button type='button' id="lights" class='btn btn-success'>Turn On</button>
+      </div>
+    </div>
+        
+    <h5 class="card-title">Webserver</h5>
+    <div class="row">
+      <div class="col pb-2">
+        <button type='button' id="webserverOff" class='btn btn-success'>Turn Off</button>
+        <button type='button' id="webserverRestart" class='btn btn-success'>Restart</button>
+      </div>
+    </div>
 
-  </body>
+    <h5 class="card-title">Horn </h5>
+    <div class="row">
+      <div class="col pb-2">
+        <button type='button' id="hornTest" class='btn btn-success'>Test</button>
+      </div>
+    </div>
+
+
+  </main> <!-- of status -->
+
+
+
+  <!-- JQuery -->
+  <script src="/js/jquery-3.2.1.min.js"></script>
+
+  <script src="/markset.js"></script>
+
+</body>
+
 </html>

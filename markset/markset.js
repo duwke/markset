@@ -195,6 +195,7 @@ function update_buttons() {
         $.ajax({
             url: "/api/race/begin_race",
             type: "POST",
+            data: $("#prestartTime").val(),
             // contentType: 'application/json',
             success: function (result) {
                 // on success - reload table
@@ -208,9 +209,9 @@ function update_buttons() {
     $("#raceDelay").click(function (e) {
         e.preventDefault();
         // Send RESTApi request to change port status
-        $.ajax({
+        $.post({
             url: "/api/race/delay",
-            type: "POST",
+            data: $("#delayTime").val(),
             // contentType: 'application/json',
             success: function (result) {
                 // on success - reload table
@@ -334,6 +335,39 @@ function update_buttons() {
             }
         })
     });
+    $("#hornTest").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/boat/horn",
+            type: "POST",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#singleClass").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        console.warn( $("#singleClassData").val());
+        $.post({
+            url: "/api/race/single_class",
+            data: $("#singleClassData").val(),
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
     //$("#myButton").html("Off");
 }
 
@@ -352,7 +386,7 @@ function load() {
     debugger;
     update_buttons();
     setInterval(poll_led_matrix, 200);
-    setTimeout(poll_anchor_status, 1000);
+    //setTimeout(poll_anchor_status, 1000);
 }
 
 $(document).ready(load);

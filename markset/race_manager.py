@@ -55,7 +55,7 @@ class RaceManager:
     def shutdown(self):
         self.shutdown_ = True
 
-    def begin_racing(self, class_index = -1):
+    def begin_racing(self, class_index = -1, prestartMin = 15):
         # set mode
         logging.warn("begin_racing")
 
@@ -67,7 +67,33 @@ class RaceManager:
                 print(exc)
         self.mode_ = MODE.RACING
         self.class_index_ = class_index
-        prestart_length = list(self.config_["prestart_timeline"][0].keys())[0] # get first time, this is overall length
+        prestart_length = prestartMin * 60 #list(self.config_["prestart_timeline"][0].keys())[0] # get first time, this is overall length
+
+        logging.warn("prestart_length " + str(prestart_length))
+        self.begin_timer_(prestart_length)
+
+    def begin_single_class_racing(self, class_name):
+        # set mode
+        logging.warn("begin_single_class_racing")
+
+        #reload just in case
+        with open("markset/config.yaml", "r") as stream:
+            try:
+                self.config_ = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+        # remove all other classes from config
+        sailclass = []
+        for i in self.config_["order"]:
+            print(str(i))
+            if i['name'] == class_name:
+                sailclass.append(i)
+        print(str(sailclass))
+        print(str(self.config_))
+        self.config_["order"] = sailclass
+        self.mode_ = MODE.RACING
+        self.class_index_ = -1
+        prestart_length = 60 # get first time, this is overall length
 
         logging.warn("prestart_length " + str(prestart_length))
         self.begin_timer_(prestart_length)
@@ -275,7 +301,8 @@ class RaceManager:
             return
 
         self.leds_.fill_color(self.config_['order'][bottom_index]['color'])
-        self.leds_.fill_text(str(bottom_index + 1) + "-" + self.config_['order'][bottom_index]['name'], 1, 2, 0xffffff)
+        marquee = str(bottom_index + 1) + " " + self.config_['order'][bottom_index]['name'] + " "  + self.config_['order'][bottom_index]['course'] + self.config_['order'][bottom_index]['laps']
+        self.leds_.fill_text(marquee, 1, 2, 0xffffff)
 
         if num_seconds_in > self.pause_seconds:
             top_index = int(num_seconds_in / (self.pause_seconds + self.scroll_seconds)) 
@@ -322,7 +349,7 @@ class RaceManager:
             if (num_seconds_in % 2) >= 1:
                 # show flag
                 sail_class = self.config_['order'][self.class_index_]
-                self.leds_.write_over_frame("next" + sail_class['name'], 0xffffff, sail_class['color'], 0, 2)
+                self.leds_.write_over_frame("next " + sail_class['name'], 0xffffff, sail_class['color'], 0, 2)
 
             else:
                 # countdown
