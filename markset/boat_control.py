@@ -2,13 +2,22 @@ from pymavlink import mavutil
 from datetime import datetime
 import time
 import logging
+import enum
 
+class AnchorMode(enum.Enum):
+    disabled = 1 # this is the default state
+    hold = 2
+    up = 3
+    down = 4
+    lock = 5 # this disables the motor as well after the brake is in place
 
 class BoatControl:
 ### a generic class for displaying 10x60 matrix.  Consumed by web and led display.
 
+
     def __init__(self):
         self.connected_ = False
+        self.anchor_mode_ = AnchorMode.disabled
 
     def connect(self):
         """
@@ -108,3 +117,12 @@ class BoatControl:
         self.master_.motors_disarmed_wait()
 
         print('motors armed:', self.master_.motors_armed())
+
+    def set_anchor_mode(self, mode):
+        self.anchor_mode_ = AnchorMode[mode]
+
+    def get_anchor_mode_int(self):
+        return self.anchor_mode_.value
+
+    def get_anchor_mode(self):
+        return self.anchor_mode_.name

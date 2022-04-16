@@ -275,7 +275,7 @@ function update_buttons() {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/anchor/disable",
+            url: "/api/anchor/disabled",
             type: "POST",
             // contentType: 'application/json',
             success: function (result) {
@@ -292,6 +292,22 @@ function update_buttons() {
         // Send RESTApi request to change port status
         $.ajax({
             url: "/api/anchor/hold",
+            type: "POST",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#anchorLock").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/anchor/lock",
             type: "POST",
             // contentType: 'application/json',
             success: function (result) {

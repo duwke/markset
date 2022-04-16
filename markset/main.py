@@ -32,6 +32,8 @@ horn = horn.Horn()
 race_manager = race_manager.RaceManager(matrix, horn)
 boat = BoatControl()
 
+
+
 # Index page
 @app.route('/')
 async def index():
@@ -145,23 +147,15 @@ async def race_api(mode):
 
 
 @app.route('/api/anchor/<mode>', methods=['POST'])
-async def anchor_api(mode):
+def anchor_api(mode):
     if request.method == 'POST':
-        async with aiohttp.ClientSession() as session:
-            async with session.post('http://192.168.4.1/api/anchor/' + mode, timeout=5) as response:
-                return {'result': 'true'}
+        boat.set_anchor_mode(mode)
+        print("set mode2 " + str(mode))
+        return {'mode': mode}
 
 @app.route('/api/anchor/status', methods=['GET'])
-async def ancho_status_api():
-    async with aiohttp.ClientSession() as session:
-        async with session.get('http://192.168.4.1/api/anchor/status', timeout=5) as response:
-
-            print("Status:", response.status)
-            print("Content-type:", response.headers['content-type'])
-
-            mode = await response.json()
-            print("Body:", mode)
-            return mode
+async def anchor_status_api():
+    return str(boat.get_anchor_mode_int())
     
 
 @app.route('/api/computer/<command>', methods=['POST'])
@@ -208,7 +202,6 @@ exec_date = datetime.datetime.today()
 if exec_date.weekday() != 2:
     exec_date = exec_date + datetime.timedelta(days=1)
 
-# Store the job in a variable in case we want to cancel it
 sched.add_job(my_job, 'cron', day_of_week='wed', hour='18', minute='00')
 
 if __name__ == "__main__":
