@@ -55,9 +55,9 @@ class RaceManager:
     def shutdown(self):
         self.shutdown_ = True
 
-    def begin_racing(self, class_index = -1, prestartMin = 15):
+    def begin_racing(self, class_index = -1, prestart_sec = 15 * 60):
         # set mode
-        logging.warn("begin_racing")
+        logging.debug("begin_racing")
 
         #reload just in case
         with open("markset/config.yaml", "r") as stream:
@@ -67,14 +67,13 @@ class RaceManager:
                 print(exc)
         self.mode_ = MODE.RACING
         self.class_index_ = class_index
-        prestart_length = prestartMin * 60 #list(self.config_["prestart_timeline"][0].keys())[0] # get first time, this is overall length
-
-        logging.warn("prestart_length " + str(prestart_length))
-        self.begin_timer_(prestart_length)
+        
+        logging.debug("prestart_length " + str(prestart_sec))
+        self.begin_timer_(prestart_sec)
 
     def begin_single_class_racing(self, class_name):
         # set mode
-        logging.warn("begin_single_class_racing")
+        logging.debug("begin_single_class_racing")
 
         #reload just in case
         with open("markset/config.yaml", "r") as stream:
@@ -95,26 +94,26 @@ class RaceManager:
         self.class_index_ = -1
         prestart_length = 60 # get first time, this is overall length
 
-        logging.warn("prestart_length " + str(prestart_length))
+        logging.debug("prestart_length " + str(prestart_length))
         self.begin_timer_(prestart_length)
 
     def begin_show_order(self, class_index = 0):
         # set mode
         # todo: use class_index
-        logging.warn("begin_show_order")
+        logging.debug("begin_show_order")
         self.mode_ = MODE.SHOW_ORDER
         num_seconds = (self.pause_seconds * self.scroll_seconds) * (len(self.config_['order']) + 1)
         self.show_order_tick_index = 0
         self.begin_timer_(num_seconds)
         
     def begin_countdown(self, seconds):
-        logging.warn("begin_countdown")
+        logging.debug("begin_countdown")
         # set mode
         self.mode_ = MODE.COUNTDOWN
         self.begin_timer_(seconds)
 
     def begin_message(self, message):
-        logging.warn("begin_message " + str(message))
+        logging.debug("begin_message " + str(message))
         # set mode
         self.message_ = message
         seconds = ((len(message) * self.message_ticks_per_character_) / self.ticks_per_second_) + self.message_pause_secs_
@@ -123,7 +122,7 @@ class RaceManager:
 
     # Delay for x minutes ending at the :00 gps time, then start 
     def begin_delay(self, minutes = 1):
-        logging.warn("delay")
+        logging.debug("delay")
         # set mode
         self.mode_ = MODE.DELAY
         now = datetime.now()
@@ -135,7 +134,7 @@ class RaceManager:
         # kick the timer
         self.start_time_ = time.time()
         self.ticks_total_ = int(seconds * self.ticks_per_second_)
-        self.seconds_countdown_ = seconds                                               
+        self.seconds_countdown_ = int(seconds)                                               
         self.tick_index_ = 0
         if self.current_task_ is None:
             loop = asyncio.get_running_loop()
@@ -168,12 +167,12 @@ class RaceManager:
             if num_ticks <= self.tick_index_:
                 # just sleep enough to get to the next tick.
                 mill_seconds_til_next_tick = ((self.tick_index_ + 1) / self.ticks_per_second_) - duration
-                logging.warn("ticks " + str(num_ticks) + "/" + str(self.ticks_total_))
+                logging.debug("ticks " + str(num_ticks) + "/" + str(self.ticks_total_))
                 await asyncio.sleep(mill_seconds_til_next_tick) 
             else:
                 logging.warn("catchup ticks " + str(duration * self.ticks_per_second_) + " > " + str(self.tick_index_))
 
-        logging.warn("stop task")
+        logging.debug("stop task")
         self.leds_.clear()
         self.leds_.copy_matrix_to_led()
         self.current_task_ = None
@@ -200,7 +199,7 @@ class RaceManager:
                     timeline_obj = i[timeline_seconds]
                     if timeline_obj.__contains__("music"):
                         if timeline_seconds + 1 == self.seconds_countdown_:
-                            logging.warn("Start music " + timeline_obj["music"])
+                            logging.debug("Start music " + timeline_obj["music"])
                             self.horn_.play(timeline_obj["music"])
                             if timeline_obj.__contains__("music_timeout"):
                                 self.music_countdown_ = timeline_obj["music_timeout"]
@@ -208,11 +207,11 @@ class RaceManager:
 
             # do this on whole seconds
             if self.tick_index_ % self.ticks_per_second_ == 0:
-                logging.warn("whole second " + str(self.seconds_countdown_))
+                logging.debug("whole second " + str(self.seconds_countdown_))
                 if self.music_countdown_ > 0:
                     self.music_countdown_ = self.music_countdown_ - 1
 
-                    logging.warn("music countdown " + str(self.music_countdown_))
+                    logging.debug("music countdown " + str(self.music_countdown_))
                     if self.music_countdown_ == 0:
                         self.horn_.stop()
                 # determine if we have a new function
@@ -222,7 +221,7 @@ class RaceManager:
 
                     if timeline_seconds == self.seconds_countdown_:
                         if timeline_obj.__contains__("function"):
-                            logging.warn("Start function " + timeline_obj["function"])
+                            logging.debug("Start function " + timeline_obj["function"])
                             self.timeline_function_ = timeline_obj["function"]
                             if self.timeline_function_ == "ShowOrder": 
                                 self.pause_seconds = 1
@@ -242,12 +241,12 @@ class RaceManager:
                 self.show_order_tick()
             elif self.timeline_function_ == "ClassTunes" or self.timeline_function_ == "ClassFlagUp" or self.timeline_function_ == "PrepFlageUp" or self.timeline_function_ == "PrepFlageDown": 
                 self.count_down_tick(shift_left=True, color=0xFF0000)
-                logging.warn("classflag")
+                logging.debug("classflag")
                 # show the class flag to the right
                 self.leds_.write_over_frame(sail_class['name'], 0xffffff, sail_class['color'], 30, 2)
                 if self.timeline_function_ == "PrepFlageUp" and self.seconds_countdown_ % 2 == 1:
                     # every odd second, show the prep flag instead of countdown
-                    logging.warn("PrepFlageUp " + str(self.seconds_countdown_ % 2))
+                    logging.debug("PrepFlageUp " + str(self.seconds_countdown_ % 2))
                     self.leds_.show_prepflag_left()
             elif self.class_index_ == -1:
                 self.count_down_tick(0x00ff00)
@@ -257,7 +256,7 @@ class RaceManager:
             if  self.tick_index_ == self.ticks_total_ - 1 and self.class_index_ + 1 < len(self.config_["class_timeline"]) :
                 self.class_index_ = self.class_index_ + 1
                 sail_class = self.config_['order'][self.class_index_]
-                logging.warn("changing class " + str(sail_class))
+                logging.debug("changing class " + str(sail_class))
                 self.seconds_countdown_ = list(self.config_["class_timeline"][0].keys())[0] #largest time in class_timeline
                 self.begin_timer_(self.seconds_countdown_)
             elif self.tick_index_ == self.ticks_total_ - 1:
@@ -283,7 +282,7 @@ class RaceManager:
             left_index = 15
             if shift_left:
                 left_index = 1
-            self.leds_.fill_text(str(num_min) + ":" + str(seconds_remaining).zfill(2), left_index, 2, color)
+            self.leds_.fill_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), left_index, 2, color)
 
         
     def show_order_tick(self):
@@ -296,7 +295,7 @@ class RaceManager:
             bottom_index = int((num_seconds_in - self.pause_seconds) / (self.pause_seconds + self.scroll_seconds)) + 1
 
         if bottom_index + 1 > len(self.config_['order']):
-            logging.warn("order complete")
+            logging.debug("order complete")
             self.timeline_function_ = "Countdown" 
             return
 
@@ -310,25 +309,25 @@ class RaceManager:
             # is the bottom the only thing shown?
             ticks_in_this_index = self.show_order_tick_index - ((top_index) * (self.pause_seconds + self.scroll_seconds) * self.ticks_per_second_)
             is_paused = ticks_in_this_index < self.pause_seconds * self.ticks_per_second_
-            logging.warn("is_paused " + str(is_paused) + " " + str(ticks_in_this_index))
+            logging.debug("is_paused " + str(is_paused) + " " + str(ticks_in_this_index))
             if not is_paused:                
                 # overwrite new row with old row for shifting affect. determine how much we shift by.
                 ticks_into_scrolling = self.show_order_tick_index - ((top_index) * (self.pause_seconds + self.scroll_seconds)  * self.ticks_per_second_) - (self.pause_seconds * self.ticks_per_second_)
                 offset_x = int((ticks_into_scrolling / (self.scroll_seconds * self.ticks_per_second_)) * self.leds_.width())
 
-                logging.warn("frame_x " + str(self.show_order_tick_index) + " " + str(offset_x) + " " + str(ticks_into_scrolling))
+                logging.debug("frame_x " + str(self.show_order_tick_index) + " " + str(offset_x) + " " + str(ticks_into_scrolling))
                 self.leds_.write_over_frame(str(top_index + 1) + "-" + self.config_['order'][top_index]['name'], 0xffffff, self.config_['order'][top_index]['color'], offset_x, 2)
 
     def message_tick(self):
         num_seconds_in = self.tick_index_ / self.ticks_per_second_
-        logging.warn("message_tick "+ str(num_seconds_in) + " " + str(self.message_pause_secs_))
+        logging.debug("message_tick "+ str(num_seconds_in) + " " + str(self.message_pause_secs_))
         self.leds_.clear()
         if(num_seconds_in < self.message_pause_secs_):
-            logging.warn("message_tick1")
+            logging.debug("message_tick1")
             self.leds_.fill_text(self.message_, 1, 2, 0xffffff)
         else:
             index = self.tick_index_ - (self.ticks_per_second_ * self.message_pause_secs_) * (self.message_ticks_per_character_ / 6) # six pixels per character
-            logging.warn("message_tick2 " + self.message_ + " " + str(index))
+            logging.debug("message_tick2 " + self.message_ + " " + str(index))
             self.leds_.fill_text(self.message_, -int(index), 2, 0xffffff)
 
     
