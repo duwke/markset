@@ -5,9 +5,9 @@ import gc
 import neopixel
 from quart import Quart, render_template, request, redirect, url_for, send_from_directory
 import socket
-import logging
+import coloredlogs, logging
+coloredlogs.install()
 import sys, os
-import aiohttp
 
 import horn
 import race_matrix
@@ -121,21 +121,21 @@ async def race_api(mode):
                 race_manager.begin_show_order()
             elif mode == "begin_race":
                 prestart = (await request.get_data()).decode('utf-8')
-                logging.warning("got message " + str(prestart))
-                race_manager.begin_racing(prestartMin=int(prestart))
+                logging.debug("got message " + str(prestart))
+                race_manager.begin_racing(prestart_sec=int(prestart) * 60)
             elif mode == "single_class":
                 single_class = (await request.get_data()).decode('utf-8')
-                logging.warning("got message " + str(single_class))
+                logging.debug("got message " + str(single_class))
                 race_manager.begin_single_class_racing(single_class)
             elif mode == "show_message":
-                logging.warning("data " + str(await request.get_data()))
+                logging.debug("data " + str(await request.get_data()))
                 message = (await request.get_data()).decode('utf-8')
-                logging.warning("got message " + str(message))
+                logging.debug("got message " + str(message))
                 race_manager.begin_message(message)
             elif mode == "delay":
-                logging.warning("data " + str(await request.get_data()))
+                logging.debug("data " + str(await request.get_data()))
                 delay = (await request.get_data()).decode('utf-8')
-                logging.warning("got message " + str(delay))
+                logging.debug("got message " + str(delay))
                 race_manager.begin_delay(int(delay))
             return {'result': 'true'}
     except Exception as inst:
@@ -160,7 +160,7 @@ async def anchor_status_api():
 
 @app.route('/api/computer/<command>', methods=['POST'])
 async def computer_control_api(command):
-    logging.warning("computer control " + command)
+    logging.debug("computer control " + command)
     if request.method == 'POST':
         if command == "shutdown":
             matrix.clear()
@@ -172,7 +172,7 @@ async def computer_control_api(command):
 
 @app.route('/api/boat/<command>', methods=['POST'])
 async def boat_control_api(command):
-    logging.warning("boat control " + command)
+    logging.debug("boat control " + command)
     if request.method == 'POST':
         if command == "arm":
             boat.arm()
@@ -182,8 +182,24 @@ async def boat_control_api(command):
             horn.test()
         return {'result': 'true'}
 
+@app.route('/api/boat/<command>', methods=['GET'])
+async def boat_status_api(command):
+    logging.debug("boat status " + command)
+    if command == "voltage":
+        return {'result': boat.get_voltage()}
+
 async def start_countdown():
-    race_manager.begin_countdown(180)
+    # assume we are starting the race at 6:15.
+    now = datetime.datetime.now()
+    race_start = datetime.datetime.now()
+    race_start = race_start.replace(hour=18, minute=15)
+    logging.debug("race start " + str(race_start))
+
+    difference = (race_start - now)
+    total_seconds = difference.total_seconds()
+    logging.debug("time till race " + str(total_seconds))
+
+    race_manager.begin_racing(prestart_sec=total_seconds)
 
 @app.before_serving
 async def startup():
@@ -195,7 +211,7 @@ async def shutdown():
 
 # Define the function that is to be executed
 def my_job():
-    race_manager.begin_racing()
+    race_manager.begin_racing(15)
     
 exec_date = datetime.datetime.today()
 #execute on wednesdays

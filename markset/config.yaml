@@ -91,7 +91,7 @@ class_timeline: # note this is a compressed timeline, this needs to be 3 min
 order: 
   - name: 'JAM '
     color: 0x002200
-    music: danger_zone.mp3
+    music: welcome_to_the_jungle.mp3
     bitmap: bitmaps/nsb.bmp
     course: 'P'
     laps: '1'

@@ -3,6 +3,7 @@ from datetime import datetime
 import time
 import logging
 import enum
+import os, sys
 
 class AnchorMode(enum.Enum):
     disabled = 1 # this is the default state
@@ -24,7 +25,7 @@ class BoatControl:
         Sends a ping to stabilish the UDP communication and awaits for a response
         """
 
-        self.master_ = mavutil.mavlink_connection('udpout:0.0.0.0:14550', 57600, 253)
+        self.master_ = mavutil.mavlink_connection('udpout:0.0.0.0:14550', 57600, 253, udp_timeout=2)
         logging.warning("mavproxy connection " + str(self.master_))
         msg = None
         while not msg:
@@ -36,6 +37,9 @@ class BoatControl:
             )
             msg = self.master_.recv_match()
             time.sleep(0.5)
+        
+        self.connected_ = True
+
     def send_cmd(self, command, p1, p2, p3, p4, p5, p6, p7, target_sysid=None, target_compid=None):
         """Send a MAVLink command long."""
         self.master_.mav.command_long_send(target_sysid, target_compid, command, 1,  # confirmation
@@ -126,3 +130,20 @@ class BoatControl:
 
     def get_anchor_mode(self):
         return self.anchor_mode_.name
+
+    def get_voltage(self):
+
+        try:
+            if not self.connected_:
+                self.connect()
+            msg = self.master_.recv_match(type='BATTERY_STATUS',blocking=True, timeout=3)
+            logging.warn('Mode: ' + str(msg))
+            logging.warn('Mode: ' + str(msg.voltages))
+            return msg.voltages[0]
+        except Exception as inst:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(str(inst))
+            return -1
+        

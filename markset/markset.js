@@ -384,6 +384,14 @@ function update_buttons() {
             }
         })
     });
+    $("#checkVoltage").click(function (e) {
+        e.preventDefault();
+        $.getJSON("api/boat/voltage", (data) => {
+            $("#voltage").text(data.result);
+        }).fail(() => {
+            $("#voltage").text("fail");
+        });
+    });
     //$("#myButton").html("Off");
 }
 
@@ -396,7 +404,6 @@ function poll_anchor_status() {
         setTimeout(poll_anchor_status, 1000);
     });
 }
-
 
 function load() {
     debugger;
