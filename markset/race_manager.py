@@ -140,7 +140,14 @@ class RaceManager:
             loop = asyncio.get_running_loop()
             self.current_task_ = loop.create_task(self._timer())
     
+    def stop(self):
+        self.mode_ = MODE.WAITING
+        self.tick_index_ = 0 
+        self.ticks_total_ = 0 
+        self.leds_.clear()
+        self.leds_.copy_matrix_to_led()
 
+    
     async def _timer(self):
         ### update based on remaining ticks.  If we are behind, don't sleep.
         while self.tick_index_ <  self.ticks_total_ and not self.shutdown_:
@@ -178,6 +185,8 @@ class RaceManager:
         self.current_task_ = None
         if self.mode_ == MODE.COUNTDOWN:
             self.begin_show_order()
+        elif self.mode_ == MODE.MESSAGE:
+            self.begin_message(self.message_)
 
 
     def racing_tick(self):

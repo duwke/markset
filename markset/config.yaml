@@ -48,8 +48,11 @@ prestart_timeline: # note this is a compressed timeline, this needs to be 15 min
       music: one_toot.mp3
   - 60:
       function: ShowOrder
+  - 59:
       music: siren.mp3
       music_timeout: 10 
+  - 30:
+      function: ShowOrder
   - 5:
       music: five_toots.mp3
       music_timeout: 7  #five short and one long
@@ -68,7 +71,7 @@ class_timeline: # note this is a compressed timeline, this needs to be 3 min
       music_timeout: 4 
   - 90:  
       function: ShowOrderQuick
-  - 84:  
+  - 87:  
       function: PrepFlageUp
   - 60:
       function: PrepFlageDown

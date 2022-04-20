@@ -15,10 +15,6 @@ import race_manager
 from boat_control import BoatControl
 
 import datetime 
-from apscheduler.schedulers.background import BackgroundScheduler 
-
-sched = BackgroundScheduler()
-sched.start()
 
 app = Quart(__name__)
 test = False
@@ -38,30 +34,23 @@ boat = BoatControl()
 @app.route('/')
 async def index():
     return await send_from_directory('markset', 'index.html')
-
-
 @app.route('/static/<path:path>')
 async def send_static(path):
     return await send_from_directory('markset/static', path)
-
-
 @app.route('/markset.js')
 async def markset():
     # Just send file
     return await send_from_directory('markset', 'markset.js')
-
 # Images
 @app.route('/images/<fn>')
 async def images(fn):
     return await send_from_directory('markset/static/images', fn)
-
 # pre-gzip all large files (>1k) and then send gzipped version
 @app.route('/js/<fn>')
 async def files_js(fn):
     resp = await send_from_directory('markset/static/js', '{}.gz'.format(fn))
     resp.headers['Content-Encoding'] = 'gzip'
     return resp
-
 # The same for css files - e.g.
 # Raw version of bootstrap.min.css is about 146k, compare to gzipped version - 20k
 @app.route('/css/<fn>')
@@ -116,9 +105,11 @@ async def race_api(mode):
     try:
         if request.method == 'POST':
             if mode == "count_down":
-                race_manager.begin_countdown(180)
+                start_countdown()
             elif mode == "show_order":
                 race_manager.begin_show_order()
+            elif mode == "stop":
+                race_manager.stop()
             elif mode == "begin_race":
                 prestart = (await request.get_data()).decode('utf-8')
                 logging.debug("got message " + str(prestart))
@@ -182,6 +173,17 @@ async def boat_control_api(command):
             horn.test()
         return {'result': 'true'}
 
+@app.route('/api/music/<command>', methods=['POST'])
+async def music_control_api(command):
+    logging.debug("music control " + command)
+    if command == "play":
+        horn.start_walking_music()
+    elif command == "next":
+        horn.next_song()
+    elif command == "stop":
+        horn.stop()
+    return {'result': 'true'}
+
 @app.route('/api/boat/<command>', methods=['GET'])
 async def boat_status_api(command):
     logging.debug("boat status " + command)
@@ -208,17 +210,6 @@ async def startup():
 @app.after_serving
 async def shutdown():
     race_manager.shutdown()
-
-# Define the function that is to be executed
-def my_job():
-    race_manager.begin_racing(15)
-    
-exec_date = datetime.datetime.today()
-#execute on wednesdays
-if exec_date.weekday() != 2:
-    exec_date = exec_date + datetime.timedelta(days=1)
-
-sched.add_job(my_job, 'cron', day_of_week='wed', hour='18', minute='00')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

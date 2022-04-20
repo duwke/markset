@@ -239,6 +239,24 @@ function update_buttons() {
             }
         })
     });
+    $("#stopMessage").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/race/stop_message",
+            type: "POST",
+            data: $("#txtMessage").val(),
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    
     $("#anchorUp").click(function (e) {
         e.preventDefault();
         // Send RESTApi request to change port status
@@ -374,6 +392,48 @@ function update_buttons() {
         $.post({
             url: "/api/race/single_class",
             data: $("#singleClassData").val(),
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#musicPlay").click(function (e) {
+        e.preventDefault();
+        $.post({
+            url: "/api/music/play",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#musicNext").click(function (e) {
+        e.preventDefault();
+        $.post({
+            url: "/api/music/next",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
+    $("#musicStop").click(function (e) {
+        e.preventDefault();
+        $.post({
+            url: "/api/music/stop",
             // contentType: 'application/json',
             success: function (result) {
                 // on success - reload table
