@@ -1,8 +1,4 @@
-
-
 #include <heltec.h>
-
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include <AsyncTCP.h>
