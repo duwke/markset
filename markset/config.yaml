@@ -1,11 +1,56 @@
 
 race_start: 1800
-prestart_timeline: # note this is a compressed timeline, this needs to be 15 min
+prestart_timeline: 
+
+  - 1800:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1740:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1680:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1620:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1560:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1500:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1440:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1380:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1320:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1260:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1200:
+      function: ShowOrder
+      music: siren.mp3
+      music_timeout: 10 
+  - 1140:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1080:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 1020:
+      function: ShowOrder
+      music: one_toot.mp3
+  - 960:
+      function: ShowOrder
+      music: one_toot.mp3
   - 900:
       function: ShowOrder
-  - 899:
-      music: danger_zone.mp3
-      music_timeout: 59
+      music: one_toot.mp3
   - 840:
       function: ShowOrder
       music: one_toot.mp3
@@ -104,11 +149,16 @@ order:
     bitmap: bitmaps/nsb.bmp
     course: 'P'
     laps: '1'
-  - name: 'SPIN'
+  - name: 'SPNS'
     color: 0xCC0000
     music: pour_some_sugar_on_me.mp3 
     course: 'P'
     laps: '1'
+  - name: 'SPNG'
+    color: 0x351C75
+    music: pour_some_sugar_on_me.mp3 
+    course: 'M'
+    laps: '3'
 #   - name: 'J-22'
 #     color: 0xCC0000
 #     music: welcome_to_the_jungle.mp3 
