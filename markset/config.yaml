@@ -5,92 +5,150 @@ prestart_timeline:
   - 1800:
       function: ShowOrder
       music: one_toot.mp3
+  - 1770:
+      function: ShowOrder
   - 1740:
       function: ShowOrder
       music: one_toot.mp3
+  - 1710:
+      function: ShowOrder
   - 1680:
       function: ShowOrder
       music: one_toot.mp3
+  - 1650:
+      function: ShowOrder
   - 1620:
       function: ShowOrder
       music: one_toot.mp3
+  - 1590:
+      function: ShowOrder
   - 1560:
       function: ShowOrder
       music: one_toot.mp3
+  - 1530:
+      function: ShowOrder
   - 1500:
       function: ShowOrder
       music: one_toot.mp3
+  - 1470:
+      function: ShowOrder
   - 1440:
       function: ShowOrder
       music: one_toot.mp3
+  - 1410:
+      function: ShowOrder
   - 1380:
       function: ShowOrder
       music: one_toot.mp3
+  - 1350:
+      function: ShowOrder
   - 1320:
       function: ShowOrder
       music: one_toot.mp3
+  - 1290:
+      function: ShowOrder
   - 1260:
       function: ShowOrder
       music: one_toot.mp3
+  - 1230:
+      function: ShowOrder
   - 1200:
       function: ShowOrder
       music: siren.mp3
       music_timeout: 10 
+  - 1170:
+      function: ShowOrder
   - 1140:
       function: ShowOrder
       music: one_toot.mp3
+  - 1110:
+      function: ShowOrder
   - 1080:
       function: ShowOrder
       music: one_toot.mp3
+  - 1050:
+      function: ShowOrder
   - 1020:
       function: ShowOrder
       music: one_toot.mp3
+  - 990:
+      function: ShowOrder
   - 960:
       function: ShowOrder
       music: one_toot.mp3
+  - 930:
+      function: ShowOrder
   - 900:
       function: ShowOrder
       music: one_toot.mp3
+  - 870:
+      function: ShowOrder
   - 840:
       function: ShowOrder
       music: one_toot.mp3
+  - 810:
+      function: ShowOrder
   - 780:
       function: ShowOrder
       music: one_toot.mp3
+  - 750:
+      function: ShowOrder
   - 720:
       function: ShowOrder
       music: one_toot.mp3
+  - 690:
+      function: ShowOrder
   - 660:
       function: ShowOrder
       music: one_toot.mp3
+  - 630:
+      function: ShowOrder
   - 600:
       function: ShowOrder
       music: one_toot.mp3
+  - 570:
+      function: ShowOrder
   - 540:
       function: ShowOrder
       music: one_toot.mp3
+  - 510:
+      function: ShowOrder
   - 480:
       function: ShowOrder
       music: one_toot.mp3
+  - 450:
+      function: ShowOrder
   - 420:
       function: ShowOrder
       music: one_toot.mp3
+  - 390:
+      function: ShowOrder
   - 360:
       function: ShowOrder
       music: one_toot.mp3
+  - 330:
+      function: ShowOrder
   - 300:
       function: ShowOrder
       music: siren.mp3
       music_timeout: 10 
+  - 270:
+      function: ShowOrder
   - 240:
       function: ShowOrder
       music: one_toot.mp3
+  - 210:
+      function: ShowOrder
   - 180:
       function: ShowOrder
       music: one_toot.mp3
+  - 150:
+      function: ShowOrder
   - 120:
       function: ShowOrder
       music: one_toot.mp3
+  - 90:
+      function: ShowOrder
   - 60:
       function: ShowOrder
   - 59:
@@ -143,20 +201,20 @@ order:
     bitmap: bitmaps/nsb.bmp
     course: 'P'
     laps: '1'
-  - name: 'PORT'
-    color: 0x0000FF
-    music: Thunderstruck.mp3 
-    bitmap: bitmaps/nsb.bmp
-    course: 'P'
-    laps: '1'
-  - name: 'SPNS'
+  - name: 'SPRD'
     color: 0xCC0000
     music: pour_some_sugar_on_me.mp3 
     course: 'P'
     laps: '1'
-  - name: 'SPNG'
+  - name: 'SPPU'
     color: 0x351C75
     music: pour_some_sugar_on_me.mp3 
+    course: 'P'
+    laps: '1'
+  - name: 'PORT'
+    color: 0x0000FF
+    music: Thunderstruck.mp3 
+    bitmap: bitmaps/nsb.bmp
     course: 'M'
     laps: '3'
 #   - name: 'J-22'
