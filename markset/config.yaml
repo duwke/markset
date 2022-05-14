@@ -195,12 +195,6 @@ class_timeline: # note this is a compressed timeline, this needs to be 3 min
 
 
 order: 
-  - name: 'JAM '
-    color: 0x002200
-    music: welcome_to_the_jungle.mp3
-    bitmap: bitmaps/nsb.bmp
-    course: 'P'
-    laps: '1'
   - name: 'SPRD'
     color: 0xCC0000
     music: pour_some_sugar_on_me.mp3 
@@ -214,6 +208,12 @@ order:
   - name: 'PORT'
     color: 0x0000FF
     music: Thunderstruck.mp3 
+    bitmap: bitmaps/nsb.bmp
+    course: 'P'
+    laps: '1'
+  - name: 'JAM '
+    color: 0x002200
+    music: welcome_to_the_jungle.mp3
     bitmap: bitmaps/nsb.bmp
     course: 'M'
     laps: '3'

@@ -47,19 +47,13 @@ RUN ./install_geographiclib_datasets.sh
 
 # Fix the broken apm_config.yaml
 COPY apm_config.yaml /opt/ros/melodic/share/mavros/launch/apm_config.yaml
-
-RUN mkdir -p /root/markset_ws/src && \
-    cd /root/markset_ws/src && \
-    git clone https://github.com/MISTLab/XbeeMav.git && \
-    cd /root/markset_ws && \
-    catkin build -j2
-
+COPY .bashrc /root/.bashrc
 
 # MAVLink Input
 EXPOSE 5760
 
 # Envs
-ENV FCUURL=tcp://localhost:5760
+ENV FCUURL=udp://@localhost
 
 # Finally the command
 COPY entrypoint.sh /
