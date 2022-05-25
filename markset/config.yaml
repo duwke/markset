@@ -195,16 +195,6 @@ class_timeline: # note this is a compressed timeline, this needs to be 3 min
 
 
 order: 
-  - name: 'SPRD'
-    color: 0xCC0000
-    music: pour_some_sugar_on_me.mp3 
-    course: 'P'
-    laps: '1'
-  - name: 'SPPU'
-    color: 0x351C75
-    music: pour_some_sugar_on_me.mp3 
-    course: 'P'
-    laps: '1'
   - name: 'PORT'
     color: 0x0000FF
     music: Thunderstruck.mp3 
@@ -215,6 +205,16 @@ order:
     color: 0x002200
     music: welcome_to_the_jungle.mp3
     bitmap: bitmaps/nsb.bmp
+    course: 'P'
+    laps: '1'
+  - name: 'SPRD'
+    color: 0xCC0000
+    music: pour_some_sugar_on_me.mp3 
+    course: 'M'
+    laps: '3'
+  - name: 'SPPU'
+    color: 0x351C75
+    music: pour_some_sugar_on_me.mp3 
     course: 'M'
     laps: '3'
 #   - name: 'J-22'
