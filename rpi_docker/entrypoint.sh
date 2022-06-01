@@ -1,8 +1,7 @@
 #!/bin/bash
 
-FCUURL=$1
-
+fd=0
 source /opt/ros/melodic/setup.bash
 roscd mavros
-echo ${FCUURL}
-bash
+echo "$@"
+exec "$@"   

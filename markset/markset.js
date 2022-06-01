@@ -156,6 +156,23 @@ function update_buttons() {
             }
         })
     });
+    $("#restartRos").click(function (e) {
+        e.preventDefault();
+        // Send RESTApi request to change port status
+        $.ajax({
+            url: "/api/computer/restart_ros",
+            type: "POST",
+            // contentType: 'application/json',
+            success: function (result) {
+                // on success - reload table
+                console.log(result);
+                on_hash_change();
+            },
+            error: function (xhr, resp, text) {
+                console.log(method, uri, resp, text);
+            }
+        })
+    });
     $("#countDownBegin").click(function (e) {
         e.preventDefault();
         // Send RESTApi request to change port status
@@ -339,7 +356,39 @@ function update_buttons() {
     });
     $("#boatArm").click(function (e) {
         e.preventDefault();
-        // Send RESTApi request to change port status
+        // //Send RESTApi request to change port status
+        // $.ajax({
+        //     url: "/api/boat/arm",
+        //     type: "POST",
+        //     // contentType: 'application/json',
+        //     success: function (result) {
+        //         // on success - reload table
+        //         console.log(result);
+        //     },
+        //     error: function (xhr, resp, text) {
+        //         console.log(method, uri, resp, text);
+        //     }
+        // })
+        var armService = new ROSLIB.Service({
+            ros : g_ros,
+            name : '/mavros/cmd/arming',
+            serviceType : 'mavros_msgs/CommandBool'
+        });
+    
+        var request = new ROSLIB.ServiceRequest({
+            value : true
+        });
+    
+        armService.callService(request, function(result) {
+            console.log('Result for service call on '
+            + armService.name
+            + ': '
+            + result);
+        });
+    });
+    $("#boatOldArm").click(function (e) {
+        e.preventDefault();
+        //Send RESTApi request to change port status
         $.ajax({
             url: "/api/boat/arm",
             type: "POST",
@@ -452,6 +501,9 @@ function update_buttons() {
             $("#voltage").text("fail");
         });
     });
+    $("#navToRamp").click(function (e) {
+        
+    });
     //$("#myButton").html("Off");
 }
 
@@ -464,12 +516,48 @@ function poll_anchor_status() {
         setTimeout(poll_anchor_status, 1000);
     });
 }
+var g_ros;
 
 function load() {
     debugger;
     update_buttons();
     setInterval(poll_led_matrix, 200);
     //setTimeout(poll_anchor_status, 1000);
+    g_ros = new ROSLIB.Ros({
+        url : 'ws://' + location.hostname + ':9090'
+    });
+    g_ros.on('connection', function() {
+        $("#mavros_status").css('color', 'green');
+    });
+
+    g_ros.on('error', function(error) {
+        console.log('Error connecting to websocket server: ', error);
+        $("#mavros_status").css('color', 'red');
+    });
+
+    g_ros.on('close', function() {
+        console.log('Error connecting to websocket server: ', error);
+        $("#mavros_status").css('color', 'red');
+    });
+
+    var listener = new ROSLIB.Topic({
+        ros : g_ros,
+        name : '/mavros/state',
+        messageType : 'mavros_msgs/State'
+    });
+
+    listener.subscribe(function(message) {
+        $("#mavros_state").text(message.mode);
+        if(message.connected === false){
+            $("#armed_panel").hide();
+            $("#boat_status").css('color', 'red');
+        }else{
+            $("#armed_panel").show();
+            $("#boat_status").css('color', 'green');
+        }
+        console.log('Received message on ' + listener.name + ': ' + message.data);
+    });
+
 }
 
 $(document).ready(load);

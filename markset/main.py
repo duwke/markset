@@ -159,6 +159,9 @@ async def computer_control_api(command):
             os.system('sudo shutdown now')
         elif command == "restart":
             os.system('sudo reboot now')
+        elif command == "restart_ros":
+            os.system('sudo systemctl restart mavproxy')
+            os.system('sudo docker restart mavros')
         return {'result': 'true'}
 
 @app.route('/api/boat/<command>', methods=['POST'])

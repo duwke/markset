@@ -1,21 +1,57 @@
 version: "2.3"
 
 services:
-
-  mavros:
-    container_name: mavros
+  ros:
+    container_name: ros
     image: markset-mavros:latest
-    command: roslaunch mavros apm2.launch fcu_url:=${FCUURL}
+    command: roscore
     stdin_open: true
     tty: true
     network_mode: "host"
     privileged: true
-    devices:
-      - "/dev/snd/seq:/dev/snd/seq"
+    restart: unless-stopped
     volumes:
       - /dev:/dev
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     environment:
       DISPLAY: ${DISPLAY}
       QT_X11_NO_MITSHM: 1
-      FCUURL: "udp://@localhost"
+
+  mavros:
+    container_name: mavros
+    image: markset-mavros:latest
+    command: roslaunch --wait mavros apm2.launch fcu_url:=udp://@localhost
+    stdin_open: true
+    tty: true
+    network_mode: "host"
+    privileged: true
+    restart: unless-stopped
+    depends_on:
+      - "ros"
+    volumes:
+      - /dev:/dev
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /home/pi/workspace/markset:/home/pi/workspace/markset
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_X11_NO_MITSHM: 1
+
+  rosbridge:
+    container_name: rosbridge
+    image: markset-mavros:latest
+    command: roslaunch --wait rosbridge_server rosbridge_websocket.launch
+    stdin_open: true
+    restart: unless-stopped
+    tty: true
+    network_mode: "host"
+    privileged: true
+    depends_on:
+      - "ros"
+    volumes:
+      - /dev:/dev
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /home/pi/workspace/markset:/home/pi/workspace/markset
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_X11_NO_MITSHM: 1
+  

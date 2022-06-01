@@ -210,13 +210,13 @@ order:
   - name: 'SPRD'
     color: 0xCC0000
     music: pour_some_sugar_on_me.mp3 
-    course: 'M'
-    laps: '3'
+    course: 'P'
+    laps: '1'
   - name: 'SPPU'
     color: 0x351C75
     music: pour_some_sugar_on_me.mp3 
-    course: 'M'
-    laps: '3'
+    course: 'P'
+    laps: '1'
 #   - name: 'J-22'
 #     color: 0xCC0000
 #     music: welcome_to_the_jungle.mp3 
