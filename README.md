@@ -24,3 +24,6 @@ ffmpeg -hwaccel opencl -v verbose -filter_complex '[0:0]format=yuv420p,hwupload[
 
 Setting time for debugging
 sudo date +%T -s "11:06:13"
+
+Set rtc clock
+sudo hwclock -w

@@ -104,7 +104,7 @@ async def led_api():
 async def race_api(mode):
     try:
         if request.method == 'POST':
-            if mode == "count_down":
+            if mode == "wnr":
                 start_countdown()
             elif mode == "show_order":
                 race_manager.begin_show_order()

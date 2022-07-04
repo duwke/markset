@@ -173,13 +173,12 @@ function update_buttons() {
             }
         })
     });
-    $("#countDownBegin").click(function (e) {
+    $("#raceWNR").click(function (e) {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/race/count_down",
+            url: "/api/race/wnr",
             type: "POST",
-            data: { "num_min": "3" },
             // contentType: 'application/json',
             success: function (result) {
                 // on success - reload table
@@ -190,6 +189,7 @@ function update_buttons() {
             }
         })
     });
+    
     $("#showOrder").click(function (e) {
         e.preventDefault();
         // Send RESTApi request to change port status
@@ -502,9 +502,64 @@ function update_buttons() {
         });
     });
     $("#navToRamp").click(function (e) {
-        
+        GotoWaypoint(29.550373, -95.048091);
     });
-    //$("#myButton").html("Off");
+
+
+    function GotoWaypoint(lat, longitude){
+
+        var mission_clear = new ROSLIB.Service({
+            ros : g_ros,
+            name : '/mavros/mission/clear',
+            serviceType : 'mavros_msgs/WaypointPush'
+        }); 
+
+        var mission_push = new ROSLIB.Service({
+            ros : g_ros,
+            name : '/mavros/mission/push',
+            serviceType : 'mavros_msgs/WaypointPush'
+        });
+        var set_mode = new ROSLIB.Service({
+            ros : g_ros,
+            name : 'mavros/set_mode',
+            serviceType : 'mavros_msgs/SetMode'
+        });
+
+        var auto_mode = new ROSLIB.ServiceRequest({
+            custom_mode: "AUTO" // http://wiki.ros.org/mavros/CustomModes  Auto
+        });
+
+    
+        var mission = new ROSLIB.ServiceRequest({
+            start_index: 0,
+            waypoints: [{frame: 0, command: 17, // https://mavlink.io/en/messages/common.html#MAV_CMD_NAV_LOITER_UNLIM
+            is_current: true, autocontinue: true, param1: 5.0, param2: 0.0,
+          param3: 50.0, param4: 0.0, x_lat: lat, y_long: longitude, z_alt: 50.0},
+          {frame: 3, command: 17, // https://mavlink.io/en/messages/common.html#MAV_CMD_NAV_LOITER_UNLIM
+                is_current: true, autocontinue: true, param1: 5.0, param2: 0.0,
+              param3: 50.0, param4: 0.0, x_lat: lat, y_long: longitude, z_alt: 50.0}] 
+        });
+    
+        mission_clear.callService({}, function(result) {
+            console.log('Result for clear on '
+                + JSON.stringify(result));
+        });
+    
+        mission_push.callService(mission, function(result) {
+            console.log('Result for service call on '
+                + mission_push.name
+                + ': '
+                + JSON.stringify(result));
+
+            set_mode.callService(auto_mode, function(result){
+                console.log('Result for service call on '
+                    + auto_mode
+                    + ': '
+                    + JSON.stringify(result));
+
+            })
+        });
+    }
 }
 
 function poll_anchor_status() {
@@ -547,7 +602,11 @@ function load() {
     });
 
     listener.subscribe(function(message) {
-        $("#mavros_state").text(message.mode);
+        var armed_state = "Disarmed";
+        if(message.armed){
+            armed_state = "Armed";
+        }
+        $("#mavros_state").text(message.mode + " " + armed_state);
         if(message.connected === false){
             $("#armed_panel").hide();
             $("#boat_status").css('color', 'red');
