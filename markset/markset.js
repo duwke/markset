@@ -504,6 +504,12 @@ function update_buttons() {
     $("#navToRamp").click(function (e) {
         GotoWaypoint(29.550373, -95.048091);
     });
+    $("#returnToDock").click(function (e) {
+        GotoWaypoint(29.549878, -95.048130);
+    });
+    $("#raceStart").click(function (e) {
+        GotoWaypoint(29.549878, -95.048130);
+    });
 
 
     function GotoWaypoint(lat, longitude){
@@ -532,33 +538,34 @@ function update_buttons() {
     
         var mission = new ROSLIB.ServiceRequest({
             start_index: 0,
-            waypoints: [{frame: 0, command: 17, // https://mavlink.io/en/messages/common.html#MAV_CMD_NAV_LOITER_UNLIM
-            is_current: true, autocontinue: true, param1: 5.0, param2: 0.0,
-          param3: 50.0, param4: 0.0, x_lat: lat, y_long: longitude, z_alt: 50.0},
+            waypoints: [{frame: 0, command: 16, // https://mavlink.io/en/messages/crsoommon.html#MAV_CMD_NAV_LOITER_UNLIM
+            is_current: true, autocontinue: true, param1: 0, param2: 0.0,
+          param3: 0, param4: 0.0, x_lat: 0, y_long: 0, z_alt: 0},
           {frame: 3, command: 17, // https://mavlink.io/en/messages/common.html#MAV_CMD_NAV_LOITER_UNLIM
-                is_current: true, autocontinue: true, param1: 5.0, param2: 0.0,
+                is_current: false, autocontinue: true, param1: 5.0, param2: 0.0,
               param3: 50.0, param4: 0.0, x_lat: lat, y_long: longitude, z_alt: 50.0}] 
         });
     
         mission_clear.callService({}, function(result) {
             console.log('Result for clear on '
                 + JSON.stringify(result));
-        });
-    
-        mission_push.callService(mission, function(result) {
-            console.log('Result for service call on '
-                + mission_push.name
-                + ': '
-                + JSON.stringify(result));
 
-            set_mode.callService(auto_mode, function(result){
+            mission_push.callService(mission, function(result) {
                 console.log('Result for service call on '
-                    + auto_mode
+                    + mission_push.name
                     + ': '
                     + JSON.stringify(result));
 
-            })
+                set_mode.callService(auto_mode, function(result){
+                    console.log('Result for service call on '
+                        + auto_mode
+                        + ': '
+                        + JSON.stringify(result));
+
+                })
+            });
         });
+    
     }
 }
 

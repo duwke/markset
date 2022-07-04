@@ -105,7 +105,7 @@ async def race_api(mode):
     try:
         if request.method == 'POST':
             if mode == "wnr":
-                start_countdown()
+                await start_countdown()
             elif mode == "show_order":
                 race_manager.begin_show_order()
             elif mode == "stop":
