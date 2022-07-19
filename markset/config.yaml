@@ -103,6 +103,8 @@ prestart_timeline:
       music: one_toot.mp3
   - 630:
       function: ShowOrder
+  - 615:
+      function: ShowOrder
   - 600:
       function: ShowOrder
       music: one_toot.mp3
@@ -207,13 +209,13 @@ order:
     bitmap: bitmaps/nsb.bmp
     course: 'P'
     laps: '1'
-  - name: 'SPRD'
-    color: 0xCC0000
+  - name: 'SP22'
+    color: 0x351C75
     music: pour_some_sugar_on_me.mp3 
     course: 'P'
     laps: '1'
-  - name: 'SPPU'
-    color: 0x351C75
+  - name: 'SPRD'
+    color: 0xCC0000
     music: pour_some_sugar_on_me.mp3 
     course: 'P'
     laps: '1'
