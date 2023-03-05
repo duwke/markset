@@ -1,56 +1,38 @@
 version: "2.3"
 
 services:
-  ros:
-    container_name: ros
-    image: markset-mavros:latest
-    command: roscore
-    stdin_open: true
-    tty: true
-    network_mode: "host"
-    privileged: true
-    restart: unless-stopped
-    volumes:
-      - /dev:/dev
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    environment:
-      DISPLAY: ${DISPLAY}
-      QT_X11_NO_MITSHM: 1
-
-  mavros:
-    container_name: mavros
-    image: markset-mavros:latest
-    command: roslaunch --wait mavros apm2.launch fcu_url:=udp://@localhost
-    stdin_open: true
-    tty: true
-    network_mode: "host"
-    privileged: true
-    restart: unless-stopped
-    depends_on:
-      - "ros"
-    volumes:
-      - /dev:/dev
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - /home/pi/workspace/markset:/home/pi/workspace/markset
-    environment:
-      DISPLAY: ${DISPLAY}
-      QT_X11_NO_MITSHM: 1
+  # mavros:
+  #   container_name: mavros
+  #   image: markset-mavros-rolling:latest
+  #   command: ros2 launch --wait mavros apm2.launch fcu_url:=udp://@localhost
+  #   stdin_open: true
+  #   tty: true
+  #   network_mode: "host"
+  #   privileged: true
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - "ros"
+  #   volumes:
+  #     - /dev:/dev
+  #     - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  #     - /home/ubuntu/markset:/home/root/markset
+  #   environment:
+  #     DISPLAY: ${DISPLAY}
+  #     QT_X11_NO_MITSHM: 1
 
   rosbridge:
     container_name: rosbridge
-    image: markset-mavros:latest
-    command: roslaunch --wait rosbridge_server rosbridge_websocket.launch
+    image: markset-mavros-rolling:latest
+    command: ros2 launch rosbridge_server rosbridge_websocket_launch.xml use_compression:=True
     stdin_open: true
     restart: unless-stopped
     tty: true
     network_mode: "host"
     privileged: true
-    depends_on:
-      - "ros"
     volumes:
       - /dev:/dev
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - /home/pi/workspace/markset:/home/pi/workspace/markset
+      - /home/ubuntu/markset:/home/root/markset
     environment:
       DISPLAY: ${DISPLAY}
       QT_X11_NO_MITSHM: 1
