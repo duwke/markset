@@ -1,6 +1,0 @@
-{
-  "devDependencies": {
-    "electron-rebuild": "^3.2.5",
-    "serialport": "^9.2.8"
-  }
-}

@@ -46,7 +46,7 @@ class RaceManager:
         self.message_ = ""
         self.message_ticks_per_character_ = 6 #characters are 6 pixels wide
         self.message_pause_secs_ = 3
-        with open("markset/config.yaml", "r") as stream:
+        with open("config.yaml", "r") as stream:
             try:
                 self.config_ = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
@@ -60,7 +60,7 @@ class RaceManager:
         logging.debug("begin_racing")
 
         #reload just in case
-        with open("markset/config.yaml", "r") as stream:
+        with open("config.yaml", "r") as stream:
             try:
                 self.config_ = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
@@ -76,7 +76,7 @@ class RaceManager:
         logging.debug("begin_single_class_racing")
 
         #reload just in case
-        with open("markset/config.yaml", "r") as stream:
+        with open("config.yaml", "r") as stream:
             try:
                 self.config_ = yaml.safe_load(stream)
             except yaml.YAMLError as exc:

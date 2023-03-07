@@ -12,8 +12,6 @@ import sys, os
 import horn
 import race_matrix
 import race_manager
-from boat_control import BoatControl
-
 import datetime 
 
 app = Quart(__name__)
@@ -26,7 +24,6 @@ pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.9,
 matrix = race_matrix.RaceMatrix(pixels, pixel_width, pixel_height)
 horn = horn.Horn()
 race_manager = race_manager.RaceManager(matrix, horn)
-boat = BoatControl()
 
 
 
@@ -136,17 +133,6 @@ async def race_api(mode):
         print(str(inst))
         return {'result': 'false'}
 
-
-@app.route('/api/anchor/<mode>', methods=['POST'])
-def anchor_api(mode):
-    if request.method == 'POST':
-        boat.set_anchor_mode(mode)
-        print("set mode2 " + str(mode))
-        return {'mode': mode}
-
-@app.route('/api/anchor/status', methods=['GET'])
-async def anchor_status_api():
-    return str(boat.get_anchor_mode_int())
     
 
 @app.route('/api/computer/<command>', methods=['POST'])
@@ -164,17 +150,6 @@ async def computer_control_api(command):
             os.system('sudo docker restart mavros')
         return {'result': 'true'}
 
-@app.route('/api/boat/<command>', methods=['POST'])
-async def boat_control_api(command):
-    logging.debug("boat control " + command)
-    if request.method == 'POST':
-        if command == "arm":
-            boat.arm()
-        elif command == "disarm":
-            boat.disarm()
-        elif command == "horn":
-            horn.test()
-        return {'result': 'true'}
 
 @app.route('/api/music/<command>', methods=['POST'])
 async def music_control_api(command):
@@ -186,12 +161,6 @@ async def music_control_api(command):
     elif command == "stop":
         horn.stop()
     return {'result': 'true'}
-
-@app.route('/api/boat/<command>', methods=['GET'])
-async def boat_status_api(command):
-    logging.debug("boat status " + command)
-    if command == "voltage":
-        return {'result': boat.get_voltage()}
 
 async def start_countdown():
     # assume we are starting the race at 6:15.
