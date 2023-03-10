@@ -3,7 +3,8 @@ An autonomous airboat used for sailboat racing coordination
 
 https://github.com/duwke/markset
 
-
+# pushing to balena
+../balena-cli/balena push markset
 
 # links
 auto hot spot https://www.raspberryconnect.com/projects/157-raspberry-pi-auto-wifi-hotspot-switch-internet
