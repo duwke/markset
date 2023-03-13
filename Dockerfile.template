@@ -25,6 +25,10 @@ RUN /usr/local/bin/pip3 install \
         && \
     rm -rf ~/.cache/pip 
 
+
+# I don't know why I have to do this.. 
+RUN pip3 uninstall pygame && pip cache purge && pip3 install pygame
+
 # Set our working directory
 WORKDIR /usr/src/app
 
