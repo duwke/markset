@@ -47,6 +47,9 @@ WORKDIR /usr/src/app/markset
 # Enable udevd so that plugged dynamic hardware devices show up in our container.
 ENV UDEV=1
 
+RUN git config --global user.email "darin@keever.cc" &&
+    git config --global user.name "Darin Keever"
+
 # main.py will run when container starts up on the device
 #CMD ["/bin/bash"]
 CMD ["./code", "tunnel", "--accept-server-license-terms", "--name", "%%BALENA_MACHINE_NAME%%"]
