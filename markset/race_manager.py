@@ -15,6 +15,7 @@ from datetime import datetime
 
 class MODE(Enum):
     WAITING = 0
+    COUNTDOWN = 1
     SHOW_ORDER = 2
     RACING = 3
     MESSAGE = 4 # show a string
@@ -27,7 +28,6 @@ class RaceManager:
         print("race matrix init")   
         self.leds_ = race_matrix
         self.horn_ = horn
-        self.is_countdown = False
         self.seconds_countdown_ = 0
         self.current_task_ = None
         self.mode_ = MODE.WAITING
@@ -95,7 +95,6 @@ class RaceManager:
         prestart_length = 60 # get first time, this is overall length
 
         logging.debug("prestart_length " + str(prestart_length))
-        self.is_countdown = True
         self.begin_timer_(prestart_length)
 
     def begin_show_order(self, class_index = 0):
@@ -110,7 +109,7 @@ class RaceManager:
     def begin_countdown(self, seconds):
         logging.debug("begin_countdown")
         # set mode
-        self.is_countdown = True
+        self.mode_ = MODE.COUNTDOWN
         self.begin_timer_(seconds)
 
     def begin_message(self, message):
@@ -119,7 +118,6 @@ class RaceManager:
         self.message_ = message
         seconds = ((len(message) * self.message_ticks_per_character_) / self.ticks_per_second_) + self.message_pause_secs_
         self.mode_ = MODE.MESSAGE
-        self.is_countdown = False
         self.begin_timer_(seconds)
 
     # Delay for x minutes ending at the :00 gps time, then start 
@@ -129,7 +127,6 @@ class RaceManager:
         self.mode_ = MODE.DELAY
         now = datetime.now()
         seconds = now.second + (minutes) * 60  # it will never be less than one minute
-        self.is_countdown = True
         self.begin_timer_(seconds)
 
         
@@ -154,7 +151,7 @@ class RaceManager:
     async def _timer(self):
         ### update based on remaining ticks.  If we are behind, don't sleep.
         while self.tick_index_ <  self.ticks_total_ and not self.shutdown_:
-            if self.is_countdown:
+            if self.mode_ == MODE.COUNTDOWN:
                 self.count_down_tick()
             if self.mode_ == MODE.SHOW_ORDER:
                 self.show_order_tick()
@@ -294,7 +291,7 @@ class RaceManager:
             left_index = 15
             if shift_left:
                 left_index = 1
-            self.leds_.fill_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), left_index, 12, color)
+            self.leds_.fill_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), left_index, 2, color)
 
         
     def show_order_tick(self):
@@ -364,7 +361,7 @@ class RaceManager:
 
             else:
                 # countdown
-                self.leds_.fill_text(str(num_min) + ":" + str(seconds_remaining).zfill(2), 15, 12, 0xFF0000)
+                self.leds_.fill_text(str(num_min) + ":" + str(seconds_remaining).zfill(2), 15, 2, 0xFF0000)
 
 
         

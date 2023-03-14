@@ -19,7 +19,7 @@ test = False
 
 pixel_pin = board.D21
 pixel_width = 60
-pixel_height = 10
+pixel_height = 20
 pixels = neopixel.NeoPixel(pixel_pin, pixel_width * pixel_height, brightness=.9, auto_write=False, pixel_order=neopixel.GRB)
 matrix = race_matrix.RaceMatrix(pixels, pixel_width, pixel_height)
 horn = horn.Horn()
