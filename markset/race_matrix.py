@@ -160,6 +160,9 @@ class RaceMatrix:
 
     def fill_color(self, c):
         self.framebuf_.fill(c)
+
+    def fill_top_color(self, color):
+        self.framebuf_.fill_rect(0, 0, self.framebuf_.width, int(self.framebuf_.height/2), color)
     
     def show_prepflag_left(self):
         for y in range(self.framebuf_.height):
@@ -173,28 +176,43 @@ class RaceMatrix:
     ''' x from left, y from top, c = color ffffff '''
     def fill_text(self, text, x, y, c):
         self.framebuf_.text(text, x, y, c)
+    
+    def fill_big_text(self, text, x, y, c):
+        self.top_framebuf_.fill(self.background_color_)
+        self.top_framebuf_.text(text, x, y, c)
+        # at the end of the frame, make each pixel 4, doubling the size of the text
+        for y in range(int(self.framebuf_.height / 2)):  
+            for x in range(self.framebuf_.width) :  
+                self.framebuf_.pixel(x * 2, y * 2, self.top_framebuf_.pixel(x, y))
+                self.framebuf_.pixel(x * 2 + 1, y * 2, self.top_framebuf_.pixel(x, y))
+                self.framebuf_.pixel(x * 2, y * 2 + 1, self.top_framebuf_.pixel(x, y))
+                self.framebuf_.pixel(x * 2 + 1, y * 2 + 1, self.top_framebuf_.pixel(x, y))
+        
 
     ''' this is for the shifting affect.  create a frame over the current'''
     def write_over_frame(self, text, c, background_color, x_offset, y_offset):
         self.top_framebuf_.fill(background_color)
         self.top_framebuf_.text(text, 1, y_offset, c)
-        for y in range(self.framebuf_.height):  
+        
+        #just write to top half
+        for y in range(int(self.framebuf_.height / 2)):  
             for x in range(self.framebuf_.width) :  
                 self.framebuf_.pixel(x + x_offset, y, self.top_framebuf_.pixel(x, y))
                 
     def display_big_number(self, offset, num, debug):
-        if self.framebuf_.height < 10:
-            raise Exception('numbers are currently 10 wide and 10 long')
+        if self.framebuf_.height < 20:
+            raise Exception('numbers are currently 20 wide and 20 long')
+        #just write to top half
         for i in range(self.framebuf_.height):
             bit_row = self.matrix_nums[num][i]
-            # the numbers are currently 10 leds wide
-            for j in range(9, -1, -1):
+            # the numbers are currently 20 leds wide
+            for j in range(19, -1, -1):
                 # git bit is reversed
                 # print(str(str(j) +  " " + str(bit_row) + " " + str(1 << j)))
                 if self.get_bit(bit_row, j) == 1:
-                    self.framebuf_.pixel(offset + (9 - j), i, self.fill_color_)
+                    self.framebuf_.pixel(offset + (19 - j), i, self.fill_color_)
                 else:
-                    self.framebuf_.pixel(offset + (9 - j), i, self.background_color_)
+                    self.framebuf_.pixel(offset + (19 - j), i, self.background_color_)
 
     def cat_in_hat(self):
         for y in range(self.framebuf_.height):

@@ -14,10 +14,10 @@
             "processId": "${command:pickProcess}"
         },
         {
-            "name": "Python: Current File",
+            "name": "Python: Main",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "markset/main.py",
             "console": "integratedTerminal"
         },
         {

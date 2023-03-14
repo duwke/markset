@@ -209,12 +209,12 @@ order:
     bitmap: bitmaps/nsb.bmp
     course: 'P'
     laps: '1'
-  - name: 'SP22'
+  - name: 'J-22'
     color: 0x351C75
     music: pour_some_sugar_on_me.mp3 
     course: 'P'
     laps: '1'
-  - name: 'SPRD'
+  - name: 'SPIN'
     color: 0xCC0000
     music: pour_some_sugar_on_me.mp3 
     course: 'P'
