@@ -166,7 +166,7 @@ async def start_countdown():
     # assume we are starting the race at 6:15.
     now = datetime.datetime.now()
     race_start = datetime.datetime.now()
-    race_start = race_start.replace(hour=23, minute=15)
+    race_start = race_start.replace(hour=23, minute=15) # UTC
     logging.debug("race start " + str(race_start))
 
     difference = (race_start - now)

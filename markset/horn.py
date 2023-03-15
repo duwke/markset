@@ -16,7 +16,7 @@ class Horn:
 		self.walking_song_queue = None
 		self.sched = BackgroundScheduler()
 		self.sched.start()
-		self.tunes_path = "/home/pi/workspace/markset/markset/music/"
+		self.tunes_path = "/usr/src/app/markset/markset/music/"
 		self.tunes = []
 		self.job = None
 

@@ -229,7 +229,7 @@ class RaceMatrix:
     def cat_in_hat(self):
         for y in range(self.framebuf_.height):
             for x in range(int(self.framebuf_.width)):
-                if x % 6 < 3:
+                if x % 8 < 4:
                     self.framebuf_.pixel(x, y, 0xFF0000)
                 else:
                     self.framebuf_.pixel(x, y, 0xFFFFFF)

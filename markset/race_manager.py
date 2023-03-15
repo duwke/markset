@@ -59,7 +59,7 @@ class RaceManager:
     def shutdown(self):
         self.shutdown_ = True
 
-    def begin_racing(self, class_index = -1, prestart_sec = 15 * 60):
+    def begin_racing(self, class_index = -1, prestart_sec = 3 * 60):
         # set mode
         logging.debug("begin_racing")
 
@@ -97,7 +97,7 @@ class RaceManager:
         self.config_["order"] = sailclass
         self.mode_ = MODE.RACING
         self.class_index_ = -1
-        prestart_length = 5 # get first time, this is overall length
+        prestart_length = 60 # get first time, this is overall length
         self.last_flag_ = "Countdown" # this is to fix the stupid ShowOrderQuick bug where it doesn't show the correct thing after
 
         logging.debug("prestart_length " + str(prestart_length))
@@ -132,7 +132,7 @@ class RaceManager:
         # set mode
         self.mode_ = MODE.DELAY
         now = datetime.now()
-        seconds = now.second + (minutes) * 60  # it will never be less than one minute
+        seconds = (60 - now.second) + (minutes) * 60  # it will never be less than one minute
         self.begin_timer_(seconds)
 
         
@@ -193,6 +193,8 @@ class RaceManager:
             self.begin_show_order()
         elif self.mode_ == MODE.MESSAGE:
             self.begin_message(self.message_)
+        elif self.mode_ == MODE.DELAY:
+            self.begin_racing(self.class_index_)
 
 
     def racing_tick(self):
@@ -365,7 +367,6 @@ class RaceManager:
     
     def delay_tick(self):
         num_seconds_in = self.tick_index_ / self.ticks_per_second_
-
         if self.tick_index_ == 0:
             self.horn_.play("ambulance.mp3")
             self.music_countdown_ = 10
@@ -380,11 +381,11 @@ class RaceManager:
             if (num_seconds_in % 2) >= 1:
                 # show flag
                 sail_class = self.config_['order'][self.class_index_]
-                self.leds_.write_over_frame("next " + sail_class['name'], 0xffffff, sail_class['color'], 0, 2)
+                self.leds_.fill_big_text(sail_class['name'], 3, 1, 0xffffff, background_color=sail_class['color'])
 
             else:
                 # countdown
-                self.leds_.fill_text(str(num_min) + ":" + str(seconds_remaining).zfill(2), 15, 2, 0xFF0000)
+                self.count_down_tick(color=0xffffff, is_big=True, left_index=3)
 
 
         
