@@ -173,8 +173,8 @@ async def start_countdown():
     total_seconds = difference.total_seconds()
     logging.debug("time till race " + str(total_seconds))
 
-    #race_manager.begin_racing(prestart_sec=total_seconds)
-    race_manager.begin_racing(prestart_sec=5)
+    race_manager.begin_racing(prestart_sec=total_seconds)
+    #race_manager.begin_racing(prestart_sec=5)
 
 @app.before_serving
 async def startup():

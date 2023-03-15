@@ -50,4 +50,5 @@ RUN git config --global user.email "darin@keever.cc" && \
 
 # main.py will run when container starts up on the device
 #CMD ["/bin/bash"]
-CMD ["./code", "tunnel", "--accept-server-license-terms", "--name", "%%BALENA_MACHINE_NAME%%"]
+#CMD ["./code", "tunnel", "--accept-server-license-terms", "--name", "%%BALENA_MACHINE_NAME%%a"]
+CMD ["python3", "markset/main.py"]
