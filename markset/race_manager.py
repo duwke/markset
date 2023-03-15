@@ -22,7 +22,7 @@ class MODE(Enum):
     DELAY = 5
 class RaceManager:
 ### a generic class for displaying 10x60 matrix.  Consumed by web and led display.
-    PAUSE_SECONDS_LONG_SCROLL = 1
+    PAUSE_SECONDS_LONG_SCROLL = 2
     SCROLL_SECONDS_LONG_SCROLL = 3
     PAUSE_SECONDS_QUICK_SCROLL = 1
     SCROLL_SECONDS_QUICK_SCROLL = 1
@@ -47,6 +47,7 @@ class RaceManager:
         self.timeline_function_ = ""
         self.shutdown_ = False
         self.message_ = ""
+        self.last_flag_ = "Countdown"
         self.message_ticks_per_character_ = 6 #characters are 6 pixels wide
         self.message_pause_secs_ = 3
         with open("markset/config.yaml", "r") as stream:
@@ -154,10 +155,11 @@ class RaceManager:
     async def _timer(self):
         ### update based on remaining ticks.  If we are behind, don't sleep.
         while self.tick_index_ <  self.ticks_total_ and not self.shutdown_:
+            self.leds_.clear()
             if self.mode_ == MODE.COUNTDOWN:
                 self.count_down_tick()
             if self.mode_ == MODE.SHOW_ORDER:
-                self.show_order_tick()
+                self.show_order_tick(RaceManager.PAUSE_SECONDS_LONG_SCROLL, RaceManager.SCROLL_SECONDS_LONG_SCROLL)
             if self.mode_ == MODE.RACING:
                 self.racing_tick()
             if self.mode_ == MODE.MESSAGE:
@@ -239,15 +241,19 @@ class RaceManager:
                                 self.show_order_tick_index = 0
                             elif self.timeline_function_ == "ShowOrderQuick": 
                                 # only show the current order remaining
-                                self.show_order_tick_index = self.ticks_per_second_ * self.class_index_ * (RaceManager.PAUSE_SECONDS_QUICK_SCROLL + RaceManager.SCROLL_SECONDS_QUICK_SCROLL)
+                                self.show_order_tick_index = self.ticks_per_second_ *  self.class_index_ * (RaceManager.PAUSE_SECONDS_QUICK_SCROLL + RaceManager.SCROLL_SECONDS_QUICK_SCROLL)
                             elif self.timeline_function_ == "ClassTunes": 
                                 self.horn_.play(sail_class["music"])
                                 self.music_countdown_ = 59
+                            elif self.timeline_function_ == "ClassFlagUp" or self.timeline_function_ == "PrepFlageUp" : 
+                                self.last_flag_ = self.timeline_function_  # this is to fix the stupid ShowOrderQuick bug where it doesn't show the correct thing after
+                            elif self.timeline_function_ == "PrepFlageDown": 
+                                self.last_flag_ = "Countdown" # this is to fix the stupid ShowOrderQuick bug where it doesn't show the correct thing after
 
             #ticks
             if self.timeline_function_ == "ShowOrder" : 
                 self.show_order_tick(RaceManager.PAUSE_SECONDS_LONG_SCROLL, RaceManager.SCROLL_SECONDS_LONG_SCROLL)
-                self.count_down_tick(color=0x00ff00, is_big=False, reset_background=False)
+                self.count_down_tick(color=0x00ff00, is_big=False, reset_background=True)
             elif self.timeline_function_ == "ShowOrderQuick": 
                 self.show_order_tick(RaceManager.PAUSE_SECONDS_QUICK_SCROLL, RaceManager.SCROLL_SECONDS_QUICK_SCROLL)
                 self.count_down_tick(shift_left=True, color=0xFF0000)
@@ -255,7 +261,8 @@ class RaceManager:
                 self.count_down_tick(shift_left=True, color=0xFF0000)
                 logging.debug("classflag")
                 # show the class flag to the right
-                self.leds_.write_over_frame(sail_class['name'], 0xffffff, sail_class['color'], 30, 2)
+                self.leds_.fill_right_color(sail_class['color'])
+                self.leds_.fill_text_top_right(sail_class['name'])
                 if self.timeline_function_ == "PrepFlageUp" and self.seconds_countdown_ % 2 == 1:
                     # every odd second, show the prep flag instead of countdown
                     logging.debug("PrepFlageUp " + str(self.seconds_countdown_ % 2))
@@ -270,6 +277,8 @@ class RaceManager:
                 sail_class = self.config_['order'][self.class_index_]
                 logging.debug("changing class " + str(sail_class))
                 self.seconds_countdown_ = list(self.config_["class_timeline"][0].keys())[0] #largest time in class_timeline
+                self.timeline_function_ = self.config_['class_timeline'][0][self.seconds_countdown_]["function"] # the first function in the timeline
+                self.last_flag_ = self.timeline_function_ #fix for stupid quickorder bug
                 self.begin_timer_(self.seconds_countdown_)
             elif self.tick_index_ == self.ticks_total_ - 1:
                 self.begin_message("http://GBCA.org  Wednesday Night Racing")
@@ -281,24 +290,24 @@ class RaceManager:
 
     def count_down_tick(self, reset_background = True, shift_left = False, color = 0x00FF00, is_big = False):
         # tick every second
-        if (self.tick_index_ % self.ticks_per_second_) == 0:
-            num_min = int(self.seconds_countdown_ / 60)
-            seconds_remaining = self.seconds_countdown_ % 60
+        #if (self.tick_index_ % self.ticks_per_second_) == 0:
+        num_min = int(self.seconds_countdown_ / 60)
+        seconds_remaining = self.seconds_countdown_ % 60
 
-            if reset_background:
-                self.leds_.clear()
+        if reset_background:
+            self.leds_.fill_top_color(0x000000)
 
-            left_index = 15
+        left_index = 15
 
-            if is_big:
-                self.leds_.fill_big_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), 1, 2, color)
-            else:
-                if shift_left:
-                    left_index = 1
-                self.leds_.fill_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), left_index, 2, color)
+        if is_big:
+            self.leds_.fill_big_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), 1, 2, color)
+        else:
+            if shift_left:
+                left_index = 2
+            self.leds_.fill_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), left_index, 2, color)
 
         
-    def show_order_tick(self, pause_seconds, scroll_seconds, show_at_bottom=False):
+    def show_order_tick(self, pause_seconds, scroll_seconds):
         # for each order, give 4 seconds pause, then scroll for 6?
         # determine bottom index (not the scroller), then top index, which will scroll
         # 
@@ -309,13 +318,13 @@ class RaceManager:
 
         if bottom_index + 1 > len(self.config_['order']):
             logging.debug("order complete")
-            self.timeline_function_ = "Countdown" 
+            self.timeline_function_ =  self.last_flag_ 
             return
 
         logging.debug("order complete")
-        self.leds_.fill_top_color(self.config_['order'][bottom_index]['color'])
+        self.leds_.fill_bottom_color(self.config_['order'][bottom_index]['color'])
         marquee = str(bottom_index + 1) + " " + self.config_['order'][bottom_index]['name'] + " "  + self.config_['order'][bottom_index]['course'] + self.config_['order'][bottom_index]['laps']
-        self.leds_.fill_text(marquee, 1, 2, 0xffffff)
+        self.leds_.fill_text(marquee, 1, 12, 0xffffff)
 
         if num_seconds_in > pause_seconds:
             top_index = int(num_seconds_in / (pause_seconds + scroll_seconds)) 
@@ -330,7 +339,7 @@ class RaceManager:
                 offset_x = int((ticks_into_scrolling / (scroll_seconds * self.ticks_per_second_)) * self.leds_.width())
 
                 logging.debug("frame_x " + str(self.show_order_tick_index) + " " + str(offset_x) + " " + str(ticks_into_scrolling))
-                self.leds_.write_over_frame(str(top_index + 1) + "-" + self.config_['order'][top_index]['name'], 0xffffff, self.config_['order'][top_index]['color'], offset_x, 2)
+                self.leds_.write_over_frame(str(top_index + 1) + " " + self.config_['order'][top_index]['name'], 0xffffff, self.config_['order'][top_index]['color'], offset_x, 12)
 
     def message_tick(self):
         num_seconds_in = self.tick_index_ / self.ticks_per_second_

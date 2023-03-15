@@ -164,6 +164,12 @@ class RaceMatrix:
     def fill_top_color(self, color):
         self.framebuf_.fill_rect(0, 0, self.framebuf_.width, int(self.framebuf_.height/2), color)
     
+    def fill_right_color(self, color):
+        self.framebuf_.fill_rect(int(self.framebuf_.width/2), 0, self.framebuf_.width, self.framebuf_.height, color)
+    
+    def fill_bottom_color(self, color):
+        self.framebuf_.fill_rect(0, int(self.framebuf_.height/2), self.framebuf_.width, self.framebuf_.height, color)
+    
     def show_prepflag_left(self):
         for y in range(self.framebuf_.height):
             for x in range(int(self.framebuf_.width / 2)):
@@ -176,7 +182,9 @@ class RaceMatrix:
     ''' x from left, y from top, c = color ffffff '''
     def fill_text(self, text, x, y, c):
         self.framebuf_.text(text, x, y, c)
-    
+    def fill_text_top_right(self, text, c=0xffffff):
+        self.framebuf_.text(text, int(self.framebuf_.width / 2) + 2, 2, c)
+
     def fill_big_text(self, text, x, y, c):
         self.top_framebuf_.fill(self.background_color_)
         self.top_framebuf_.text(text, x, y, c)
@@ -194,8 +202,8 @@ class RaceMatrix:
         self.top_framebuf_.fill(background_color)
         self.top_framebuf_.text(text, 1, y_offset, c)
         
-        #just write to top half
-        for y in range(int(self.framebuf_.height / 2)):  
+        #just write to bottom half
+        for y in range(int(self.framebuf_.height / 2), self.framebuf_.height):  
             for x in range(self.framebuf_.width) :  
                 self.framebuf_.pixel(x + x_offset, y, self.top_framebuf_.pixel(x, y))
                 

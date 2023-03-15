@@ -168,16 +168,12 @@ class_timeline: # note this is a compressed timeline, this needs to be 3 min
       function: ClassTunes 
   - 150:  
       function: ShowOrderQuick
-  - 144:  
-      function: ClassFlagUp # this is dumb
   - 120:
       function: PrepFlageUp
       music: long_toot.mp3
       music_timeout: 4 
   - 90:  
       function: ShowOrderQuick
-  - 87:  
-      function: PrepFlageUp
   - 60:
       function: PrepFlageDown
       music: long_toot.mp3
