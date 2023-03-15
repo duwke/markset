@@ -186,15 +186,16 @@ class RaceMatrix:
         self.framebuf_.text(text, int(self.framebuf_.width / 2) + 2, 2, c)
 
     def fill_big_text(self, text, x, y, c):
+        self.framebuf_.fill(self.background_color_)  # otherwise left and top row are missed
         self.top_framebuf_.fill(self.background_color_)
         self.top_framebuf_.text(text, x, y, c)
         # at the end of the frame, make each pixel 4, doubling the size of the text
         for y in range(int(self.framebuf_.height / 2)):  
             for x in range(self.framebuf_.width) :  
-                self.framebuf_.pixel(x * 2, y * 2, self.top_framebuf_.pixel(x, y))
-                self.framebuf_.pixel(x * 2 + 1, y * 2, self.top_framebuf_.pixel(x, y))
-                self.framebuf_.pixel(x * 2, y * 2 + 1, self.top_framebuf_.pixel(x, y))
                 self.framebuf_.pixel(x * 2 + 1, y * 2 + 1, self.top_framebuf_.pixel(x, y))
+                self.framebuf_.pixel(x * 2 + 2, y * 2 + 1, self.top_framebuf_.pixel(x, y))
+                self.framebuf_.pixel(x * 2 + 1, y * 2 + 2, self.top_framebuf_.pixel(x, y))
+                self.framebuf_.pixel(x * 2 + 2, y * 2 + 2, self.top_framebuf_.pixel(x, y))
         
 
     ''' this is for the shifting affect.  create a frame over the current'''
