@@ -166,14 +166,17 @@ class RaceMatrix:
     
     def fill_right_color(self, color):
         self.framebuf_.fill_rect(int(self.framebuf_.width/2), 0, self.framebuf_.width, self.framebuf_.height, color)
+
+    def fill_right_top_color(self, color):
+        self.framebuf_.fill_rect(int(self.framebuf_.width/2), 0, self.framebuf_.width, int(self.framebuf_.height/2), color)
     
     def fill_bottom_color(self, color):
         self.framebuf_.fill_rect(0, int(self.framebuf_.height/2), self.framebuf_.width, self.framebuf_.height, color)
     
-    def show_prepflag_left(self):
+    def show_prepflag(self):
         for y in range(self.framebuf_.height):
-            for x in range(int(self.framebuf_.width / 2)):
-                if x >= 8 and x < int(self.framebuf_.width / 2) - 8 and y >= 2 and y < self.framebuf_.height - 2:
+            for x in range(self.framebuf_.width ):
+                if x >= 8 and x < self.framebuf_.width - 8 and y >= 4 and y < self.framebuf_.height - 4:
                     self.framebuf_.pixel(x, y, 0xFFFFFF)
                 else:
                     self.framebuf_.pixel(x, y, 0x0000FF)
@@ -185,9 +188,9 @@ class RaceMatrix:
     def fill_text_top_right(self, text, c=0xffffff):
         self.framebuf_.text(text, int(self.framebuf_.width / 2) + 2, 2, c)
 
-    def fill_big_text(self, text, x, y, c):
-        self.framebuf_.fill(self.background_color_)  # otherwise left and top row are missed
-        self.top_framebuf_.fill(self.background_color_)
+    def fill_big_text(self, text, x, y, c, background_color=0x000000):
+        self.framebuf_.fill(background_color)  # otherwise left and top row are missed
+        self.top_framebuf_.fill(background_color)
         self.top_framebuf_.text(text, x, y, c)
         # at the end of the frame, make each pixel 4, doubling the size of the text
         for y in range(int(self.framebuf_.height / 2)):  

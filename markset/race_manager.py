@@ -71,6 +71,7 @@ class RaceManager:
                 print(exc)
         self.mode_ = MODE.RACING
         self.class_index_ = class_index
+        self.last_flag_ = "Countdown" # this is to fix the stupid ShowOrderQuick bug where it doesn't show the correct thing after
         
         logging.debug("prestart_length " + str(prestart_sec))
         self.begin_timer_(prestart_sec)
@@ -97,6 +98,7 @@ class RaceManager:
         self.mode_ = MODE.RACING
         self.class_index_ = -1
         prestart_length = 5 # get first time, this is overall length
+        self.last_flag_ = "Countdown" # this is to fix the stupid ShowOrderQuick bug where it doesn't show the correct thing after
 
         logging.debug("prestart_length " + str(prestart_length))
         self.begin_timer_(prestart_length)
@@ -155,7 +157,6 @@ class RaceManager:
     async def _timer(self):
         ### update based on remaining ticks.  If we are behind, don't sleep.
         while self.tick_index_ <  self.ticks_total_ and not self.shutdown_:
-            self.leds_.clear()
             if self.mode_ == MODE.COUNTDOWN:
                 self.count_down_tick()
             if self.mode_ == MODE.SHOW_ORDER:
@@ -257,18 +258,28 @@ class RaceManager:
             elif self.timeline_function_ == "ShowOrderQuick": 
                 self.show_order_tick(RaceManager.PAUSE_SECONDS_QUICK_SCROLL, RaceManager.SCROLL_SECONDS_QUICK_SCROLL)
                 self.count_down_tick(shift_left=True, color=0xFF0000)
-            elif self.timeline_function_ == "ClassTunes" or self.timeline_function_ == "ClassFlagUp" or self.timeline_function_ == "PrepFlageUp" or self.timeline_function_ == "PrepFlageDown": 
-                self.count_down_tick(shift_left=True, color=0xFF0000)
-                logging.debug("classflag")
-                # show the class flag to the right
-                self.leds_.fill_right_color(sail_class['color'])
+                self.leds_.fill_right_top_color(sail_class['color'])
                 self.leds_.fill_text_top_right(sail_class['name'])
-                if self.timeline_function_ == "PrepFlageUp" and self.seconds_countdown_ % 2 == 1:
-                    # every odd second, show the prep flag instead of countdown
-                    logging.debug("PrepFlageUp " + str(self.seconds_countdown_ % 2))
-                    self.leds_.show_prepflag_left()
+            elif self.timeline_function_ == "ClassTunes" or self.timeline_function_ == "ClassFlagUp" or self.timeline_function_ == "PrepFlageDown": 
+                # show the class flag to the right
+                if self.seconds_countdown_ % 2 == 1:
+                    self.count_down_tick(color=0xff0000, is_big=True, left_index=3)
+                else:
+                    self.leds_.fill_big_text(sail_class['name'], 3, 1, 0xffffff, background_color=sail_class['color'])
+            elif self.timeline_function_ == "PrepFlageUp" : 
+                if self.seconds_countdown_ % 3 == 1:
+                    self.leds_.show_prepflag()
+                elif self.seconds_countdown_ % 3 == 2:
+                    self.count_down_tick(color=0xff0000, is_big=True, left_index=3)
+                else:
+                    self.leds_.fill_big_text(sail_class['name'], 3, 1, 0xffffff, background_color=sail_class['color'])
+
             elif self.class_index_ == -1:
-                self.count_down_tick(0x00ff00, is_big=True)
+                left_index = 1
+                num_min = int(self.seconds_countdown_ / 60)
+                if num_min < 10:
+                    left_index = 3
+                self.count_down_tick(0x00ff00, is_big=True, left_index=left_index)
             else: self.count_down_tick(0xff0000)
 
             # go to next class
@@ -288,7 +299,7 @@ class RaceManager:
             print(exc_type, fname, exc_tb.tb_lineno)
             print(str(inst))
 
-    def count_down_tick(self, reset_background = True, shift_left = False, color = 0x00FF00, is_big = False):
+    def count_down_tick(self, reset_background = True, shift_left = False, color = 0x00FF00, is_big = False, left_index = 15):
         # tick every second
         #if (self.tick_index_ % self.ticks_per_second_) == 0:
         num_min = int(self.seconds_countdown_ / 60)
@@ -297,10 +308,8 @@ class RaceManager:
         if reset_background:
             self.leds_.fill_top_color(0x000000)
 
-        left_index = 15
-
         if is_big:
-            self.leds_.fill_big_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), 1, 2, color)
+            self.leds_.fill_big_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), left_index, 1, color)
         else:
             if shift_left:
                 left_index = 2
