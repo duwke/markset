@@ -137,7 +137,7 @@ async def computer_control_api(command):
         elif command == "restart":
             asyncio.get_event_loop().create_task(self.shutdown())
         elif command == "pull":
-            os.system('git pull')
+            print('git result', os.system('git pull'))
         return {'result': 'true'}
 
 
