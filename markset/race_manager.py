@@ -277,7 +277,7 @@ class RaceManager:
                     self.leds_.fill_big_text(sail_class['name'], 3, 1, 0xffffff, background_color=sail_class['color'])
 
             elif self.class_index_ == -1:
-                left_index = 1
+                left_index = 0
                 num_min = int(self.seconds_countdown_ / 60)
                 if num_min > 99:
                     self.count_down_tick(0x00ff00)
