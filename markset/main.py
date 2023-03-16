@@ -124,6 +124,8 @@ async def shutdown():
     print("Restart")
     await asyncio.sleep(1)  # TODO: need to sleep to next full time second
     app.shutdown()
+    app = None
+    start_server()
 
 @app.route('/api/computer/<command>', methods=['POST'])
 async def computer_control_api(command):
@@ -177,6 +179,11 @@ async def startup():
 async def shutdown():
     race_manager.shutdown()
 
-if __name__ == "__main__":
+def start_server():
+    if app == None:
+        app = Quart(__name__)
     app.run(host='0.0.0.0', debug=True, port=80)
+
+if __name__ == "__main__":
+    start_server()
     
