@@ -52,7 +52,6 @@ function update_gpio(data) {
             success: function (result) {
                 // on success - reload table
                 console.log(result);
-                on_hash_change();
             },
             error: function (xhr, resp, text) {
                 console.log(method, uri, resp, text);
@@ -115,7 +114,6 @@ function update_buttons() {
             success: function (result) {
                 // on success - reload table
                 console.log(result);
-                on_hash_change();
             },
             error: function (xhr, resp, text) {
                 console.log(method, uri, resp, text);
@@ -132,7 +130,6 @@ function update_buttons() {
             success: function (result) {
                 // on success - reload table
                 console.log(result);
-                on_hash_change();
             },
             error: function (xhr, resp, text) {
                 console.log(method, uri, resp, text);
@@ -149,7 +146,6 @@ function update_buttons() {
             success: function (result) {
                 // on success - reload table
                 console.log(result);
-                on_hash_change();
             },
             error: function (xhr, resp, text) {
                 console.log(method, uri, resp, text);
@@ -166,7 +162,6 @@ function update_buttons() {
             success: function (result) {
                 // on success - reload table
                 console.log(result);
-                on_hash_change();
             },
             error: function (xhr, resp, text) {
                 console.log(method, uri, resp, text);
