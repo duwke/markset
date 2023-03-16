@@ -304,7 +304,7 @@ class RaceManager:
             print(exc_type, fname, exc_tb.tb_lineno)
             print(str(inst))
 
-    def count_down_tick(self, reset_background = True, shift_left = False, color = 0x00FF00, is_big = False, left_index = 15):
+    def count_down_tick(self, reset_background = True, shift_left = False, color = 0x00FF00, is_big = False, left_index = 12):
         # tick every second
         #if (self.tick_index_ % self.ticks_per_second_) == 0:
         num_min = int(self.seconds_countdown_ / 60)
