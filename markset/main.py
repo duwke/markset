@@ -120,12 +120,10 @@ async def race_api(mode):
         print(str(inst))
         return {'result': 'false'}
 
-async def shutdown():
+async def restart_webserver():
     print("Restart")
-    await asyncio.sleep(1)  # TODO: need to sleep to next full time second
-    app.shutdown()
-    app = None
-    start_server()
+    with open("main.py", "a") as a_file:
+        a_file.write("\n")
 
 @app.route('/api/computer/<command>', methods=['POST'])
 async def computer_control_api(command):
@@ -136,7 +134,7 @@ async def computer_control_api(command):
             matrix.copy_matrix_to_led()
             os.system('sudo shutdown now')
         elif command == "restart":
-            asyncio.get_event_loop().create_task(shutdown())
+            asyncio.get_event_loop().create_task(restart_webserver())
         elif command == "pull":
             print(os.getcwd())
             print('git result', subprocess.call('git pull', shell=True)) #os.system('git pull'))
@@ -179,12 +177,7 @@ async def startup():
 async def shutdown():
     race_manager.shutdown()
 
-def start_server():
-    global app
-    if app == None:
-        app = Quart(__name__)
-    app.run(host='0.0.0.0', debug=True, port=80)
 
 if __name__ == "__main__":
-    start_server()
+    app.run(host='0.0.0.0', debug=True, port=80)
     
