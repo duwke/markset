@@ -120,7 +120,7 @@ async def race_api(mode):
         print(str(inst))
         return {'result': 'false'}
 
-async def shutdown(self):
+async def shutdown():
     print("Restart")
     await asyncio.sleep(1)  # TODO: need to sleep to next full time second
     app.shutdown()
@@ -134,7 +134,7 @@ async def computer_control_api(command):
             matrix.copy_matrix_to_led()
             os.system('sudo shutdown now')
         elif command == "restart":
-            asyncio.get_event_loop().create_task(self.shutdown())
+            asyncio.get_event_loop().create_task(shutdown())
         elif command == "pull":
             print(os.getcwd())
             print('git result', subprocess.call('git pull', shell=True)) #os.system('git pull'))
