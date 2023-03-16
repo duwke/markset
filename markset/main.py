@@ -123,7 +123,7 @@ async def race_api(mode):
 async def restart_webserver():
     print("Restart")
     with open("markset/main.py", "a") as a_file:
-        a_file.write("   #test\n")
+        a_file.write("#manual restart\n")
 
 @app.route('/api/computer/<command>', methods=['POST'])
 async def computer_control_api(command):
