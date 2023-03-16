@@ -180,6 +180,7 @@ async def shutdown():
     race_manager.shutdown()
 
 def start_server():
+    global app
     if app == None:
         app = Quart(__name__)
     app.run(host='0.0.0.0', debug=True, port=80)
