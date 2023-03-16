@@ -74,18 +74,6 @@ class Status():
                }
         return {'memory': mem, 'network': net}
 
-    async def shutdown(self):
-        print("Restart")
-        await asyncio.sleep(1)  # TODO: need to sleep to next full time second
-        app.shutdown()
-
-    def put(self, data):
-        """stop the webserver"""
-        print("Status put " + str(data['status']))
-        if(data['status'] == "off"):
-            asyncio.get_event_loop().create_task(self.shutdown())
-
-        return {'message': 'changed', 'value': data['status']}
 
 
 
@@ -133,7 +121,10 @@ async def race_api(mode):
         print(str(inst))
         return {'result': 'false'}
 
-    
+async def shutdown(self):
+    print("Restart")
+    await asyncio.sleep(1)  # TODO: need to sleep to next full time second
+    app.shutdown()
 
 @app.route('/api/computer/<command>', methods=['POST'])
 async def computer_control_api(command):
@@ -144,11 +135,13 @@ async def computer_control_api(command):
             matrix.copy_matrix_to_led()
             os.system('sudo shutdown now')
         elif command == "restart":
-            os.system('sudo reboot now')
-        elif command == "restart_ros":
-            os.system('sudo systemctl restart mavproxy')
-            os.system('sudo docker restart mavros')
+            asyncio.get_event_loop().create_task(self.shutdown())
+        elif command == "pull":
+            os.system('git pull')
         return {'result': 'true'}
+
+
+
 
 
 @app.route('/api/music/<command>', methods=['POST'])

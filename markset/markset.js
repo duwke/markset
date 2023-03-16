@@ -156,11 +156,11 @@ function update_buttons() {
             }
         })
     });
-    $("#restartRos").click(function (e) {
+    $("#webserverPull").click(function (e) {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/computer/restart_ros",
+            url: "/api/computer/pull",
             type: "POST",
             // contentType: 'application/json',
             success: function (result) {

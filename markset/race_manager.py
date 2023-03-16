@@ -279,9 +279,12 @@ class RaceManager:
             elif self.class_index_ == -1:
                 left_index = 1
                 num_min = int(self.seconds_countdown_ / 60)
-                if num_min < 10:
-                    left_index = 3
-                self.count_down_tick(0x00ff00, is_big=True, left_index=left_index)
+                if num_min > 99:
+                    self.count_down_tick(0x00ff00)
+                else:
+                    if num_min < 10:
+                        left_index = 3
+                    self.count_down_tick(0x00ff00, is_big=True, left_index=left_index)
             else: self.count_down_tick(0xff0000)
 
             # go to next class
