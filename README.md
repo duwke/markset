@@ -6,6 +6,9 @@ https://github.com/duwke/markset
 # pushing to balena
 ../balena-cli/balena push markset
 
+# run vscode
+./code tunnel --accept-server-license-terms --name markset
+
 # based on python hello world example
 https://github.com/balena-io-examples/balena-python-hello-world
 
