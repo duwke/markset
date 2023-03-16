@@ -259,7 +259,7 @@ class RaceManager:
                 self.count_down_tick(color=0x00ff00, is_big=False, reset_background=True)
             elif self.timeline_function_ == "ShowOrderQuick": 
                 self.show_order_tick(RaceManager.PAUSE_SECONDS_QUICK_SCROLL, RaceManager.SCROLL_SECONDS_QUICK_SCROLL)
-                self.count_down_tick(shift_left=True, color=0xFF0000)
+                self.count_down_tick(left_index=2, color=0xFF0000)
                 self.leds_.fill_right_top_color(sail_class['color'])
                 self.leds_.fill_text_top_right(sail_class['name'])
             elif self.timeline_function_ == "ClassTunes" or self.timeline_function_ == "ClassFlagUp" or self.timeline_function_ == "PrepFlageDown": 
@@ -304,7 +304,7 @@ class RaceManager:
             print(exc_type, fname, exc_tb.tb_lineno)
             print(str(inst))
 
-    def count_down_tick(self, reset_background = True, shift_left = False, color = 0x00FF00, is_big = False, left_index = 12):
+    def count_down_tick(self, reset_background = True, color = 0x00FF00, is_big = False, left_index = 12):
         # tick every second
         #if (self.tick_index_ % self.ticks_per_second_) == 0:
         num_min = int(self.seconds_countdown_ / 60)
@@ -316,8 +316,6 @@ class RaceManager:
         if is_big:
             self.leds_.fill_big_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), left_index, 1, color)
         else:
-            if shift_left:
-                left_index = 2
             self.leds_.fill_text(str(num_min) + ":" + str(int(seconds_remaining)).zfill(2), left_index, 2, color)
 
         
