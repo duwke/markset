@@ -7,7 +7,7 @@ from quart import Quart, render_template, request, redirect, url_for, send_from_
 import socket
 import coloredlogs, logging
 coloredlogs.install()
-import sys, os
+import sys, os, subprocess
 
 import horn
 import race_matrix
@@ -137,7 +137,8 @@ async def computer_control_api(command):
         elif command == "restart":
             asyncio.get_event_loop().create_task(self.shutdown())
         elif command == "pull":
-            print('git result', os.system('git pull'))
+            print(os.getcwd())
+            print('git result', subprocess.call('git pull', shell=True)) #os.system('git pull'))
         return {'result': 'true'}
 
 
