@@ -52,7 +52,6 @@ async def files_js(fn):
 # Raw version of bootstrap.min.css is about 146k, compare to gzipped version - 20k
 @app.route('/css/<fn>')
 async def files_css(fn):
-    print("shit")
     resp = await send_from_directory('markset/static/css', '{}.gz'.format(fn))
     resp.headers['Content-Encoding'] = 'gzip'
     return resp
