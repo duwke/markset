@@ -128,7 +128,7 @@ async def shutdown(self):
 
 @app.route('/api/computer/<command>', methods=['POST'])
 async def computer_control_api(command):
-    logging.debug("computer control " + command)
+    print("computer control " + command)
     if request.method == 'POST':
         if command == "shutdown":
             matrix.clear()
