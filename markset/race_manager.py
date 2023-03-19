@@ -210,7 +210,7 @@ class RaceManager:
                 
             
             # play seems to take half a second to start.  We need this more precise for the horns
-            if self.tick_index_ % self.ticks_per_second_ == int(self.ticks_per_second_ / 2):
+            if self.tick_index_ % self.ticks_per_second_ == 4:
                 for i in timeline:
                     timeline_seconds = list(i.keys())[0]
                     timeline_obj = i[timeline_seconds]
