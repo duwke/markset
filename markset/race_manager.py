@@ -247,7 +247,7 @@ class RaceManager:
                                 self.show_order_tick_index = self.ticks_per_second_ *  self.class_index_ * (RaceManager.PAUSE_SECONDS_QUICK_SCROLL + RaceManager.SCROLL_SECONDS_QUICK_SCROLL)
                             elif self.timeline_function_ == "ClassTunes": 
                                 self.horn_.play(sail_class["music"])
-                                self.music_countdown_ = 59
+                                self.music_countdown_ = 20
                             elif self.timeline_function_ == "ClassFlagUp" or self.timeline_function_ == "PrepFlageUp" : 
                                 self.last_flag_ = self.timeline_function_  # this is to fix the stupid ShowOrderQuick bug where it doesn't show the correct thing after
                             elif self.timeline_function_ == "PrepFlageDown": 
