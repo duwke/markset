@@ -160,11 +160,11 @@ async def start_countdown():
     now = datetime.datetime.now()
     race_start = datetime.datetime.now()
     race_start = race_start.replace(hour=23, minute=15) # UTC
-    logging.debug("race start " + str(race_start))
+    print("race start " + str(race_start))
 
     difference = (race_start - now)
     total_seconds = difference.total_seconds()
-    logging.debug("time till race " + str(total_seconds))
+    print("time till race " + str(total_seconds))
 
     race_manager.begin_racing(prestart_sec=total_seconds)
     #race_manager.begin_racing(prestart_sec=5)
