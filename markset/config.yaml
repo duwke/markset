@@ -110,7 +110,7 @@ prestart_timeline:
   - 300:
       function: ShowOrder
       music: siren.mp3
-      music_timeout: 10 
+      music_timeout: 5
   - 270:
       function: ShowOrder
   - 240:
