@@ -25,6 +25,7 @@ prestart_timeline:
       function: ShowOrder
   - 1500:
       function: ShowOrder
+      music: one_toot.mp3
   - 1470:
       function: ShowOrder
   - 1440:
@@ -66,6 +67,7 @@ prestart_timeline:
       function: ShowOrder
   - 900:
       function: ShowOrder
+      music: one_toot.mp3
   - 870:
       function: ShowOrder
   - 840:
@@ -115,6 +117,7 @@ prestart_timeline:
       function: ShowOrder
   - 240:
       function: ShowOrder
+      music: one_toot.mp3
   - 210:
       function: ShowOrder
   - 180:
@@ -129,6 +132,7 @@ prestart_timeline:
       function: ShowOrder
   - 60:
       function: ShowOrder
+      music: one_toot.mp3
   - 59:
       music: siren.mp3
       music_timeout: 10 
