@@ -135,7 +135,7 @@ prestart_timeline:
       music: one_toot.mp3
   - 59:
       music: siren.mp3
-      music_timeout: 10 
+      music_timeout: 5 
   - 30:
       function: ShowOrder
   - 5:
