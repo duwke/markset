@@ -190,7 +190,7 @@ order:
     laps: ''
   - name: 'J-22'
     color: 0x351C75
-    music: pour_some_sugar_on_me.mp3 
+    music: eye_of_the_tiger.mp3 
     course: 'S'
     laps: ''
 #   - name: ' J-24'
