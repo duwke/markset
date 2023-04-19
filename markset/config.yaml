@@ -176,13 +176,11 @@ order:
   - name: 'PORT'
     color: 0x0000FF
     music: Thunderstruck.mp3 
-    bitmap: bitmaps/nsb.bmp
     course: 'S'
     laps: ''
   - name: 'JAM '
     color: 0x002200
     music: welcome_to_the_jungle.mp3
-    bitmap: bitmaps/nsb.bmp
     course: 'S'
     laps: ''
   - name: 'SPIN'
@@ -190,12 +188,11 @@ order:
     music: pour_some_sugar_on_me.mp3 
     course: 'S'
     laps: ''
-    
-#  - name: 'J-22'
-#    color: 0x351C75
-#    music: pour_some_sugar_on_me.mp3 
-#    course: 'S'
-#    laps: ''
+  - name: 'J-22'
+    color: 0x351C75
+    music: pour_some_sugar_on_me.mp3 
+    course: 'S'
+    laps: ''
 #   - name: ' J-24'
 #     color: 0x662200
 #     music: sample.wav
