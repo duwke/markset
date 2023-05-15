@@ -141,9 +141,6 @@ async def computer_control_api(command):
         return {'result': 'true'}
 
 
-
-
-
 @app.route('/api/music/<command>', methods=['POST'])
 async def music_control_api(command):
     logging.debug("music control " + command)
@@ -162,7 +159,7 @@ async def start_countdown():
     race_start = race_start.replace(hour=23, minute=15, second=0) # UTC
     print("now " + str(now))
 
-    difference = (race_start - now)
+    difference = (race_start     - now)
     total_seconds = difference.total_seconds()
     print("time till race " + str(total_seconds))
 
@@ -179,5 +176,8 @@ async def shutdown():
 
 
 if __name__ == "__main__":
+    # get the latest config
+    print('git fetch ', subprocess.call('git fetch', shell=True)) 
+    print('git checkout ', subprocess.call('checkout FETCH_HEAD -- config.yaml', shell=True)) 
     app.run(host='0.0.0.0', debug=True, port=80)
     

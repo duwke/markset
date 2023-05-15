@@ -41,6 +41,7 @@ WORKDIR /usr/src/app
 RUN git clone https://github.com/duwke/markset.git 
 
 WORKDIR /usr/src/app/markset
+
 COPY markset/music ./markset/music
 
 # Enable udevd so that plugged dynamic hardware devices show up in our container.
