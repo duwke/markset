@@ -1,11 +1,11 @@
 version: '2'
 services:
-  markset:
-    build: ./markset
-    restart: always
-    privileged: true
-    expose:
-      - "80"
+  # markset:
+  #   build: ./markset
+  #   restart: always
+  #   privileged: true
+  #   expose:
+  #     - "80"
   camera-server:
     build: ./camera_server
     privileged: true
