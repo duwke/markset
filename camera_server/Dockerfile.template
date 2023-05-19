@@ -21,7 +21,6 @@ RUN apt-get update && \
     libopencv-dev \
     libatlas3-base \
     libatlas-base-dev \
-    libjasper-dev \
     libilmbase12 \
     libopenexr22 \
     libavformat-dev \
