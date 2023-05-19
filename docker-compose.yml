@@ -11,3 +11,5 @@ services:
     privileged: true
     expose:
       - "8000"
+    labels:
+      io.balena.features.kernel-modules: '1'
