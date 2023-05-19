@@ -1,0 +1,37 @@
+FROM balenalib/raspberrypi4-64-ubuntu-python:jammy-build 
+# use `install_packages` if you need to install dependencies,
+# for instance if you need git, just uncomment the line below.
+# RUN install_packages git
+
+# Trick to get apt-get to not prompt for timezone in tzdata
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -q -y \
+        apt-transport-https \
+        curl \
+        gnupg2 \
+        htop \
+        vim \
+        python3-pyaudio \
+        portaudio19-dev \
+        libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev libfreetype6-dev \
+        software-properties-common && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN /usr/local/bin/pip3 install \
+        python-dateutil>=2.8.1 \
+        && \
+    rm -rf ~/.cache/pip 
+
+    
+WORKDIR /usr/src/app
+RUN git clone https://github.com/duwke/markset.git 
+
+CMD ["python3", "camera_server/camera_webserver.py"]
+
+# found at https://github.com/gaborvecsei/YouTube-Live-Stream-Docker/blob/master/youtube_stream_image/code/youtube_stream.py
+
+# CMD ["avconv", "-loglevel", "quiet", "-ar", "44100", "-ac", "2", "-f", "s16le", "-i", "/dev/zero", "-f", "video4linux2", "-s", \
+#                   "640x360", "-r", "10", "-i", "/dev/video0", "-f", "flv", \
+#                   "rtmp://a.rtmp.youtube.com/live2/{0}".format(YOUTUBE_LIVE_KEY)]

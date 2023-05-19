@@ -40,9 +40,9 @@ WORKDIR /usr/src/app
 # COPY . ./
 RUN git clone https://github.com/duwke/markset.git 
 
-WORKDIR /usr/src/app/markset
+WORKDIR /usr/src/app/markset/markset
 
-COPY markset/music ./markset/music
+COPY music ./music
 
 # Enable udevd so that plugged dynamic hardware devices show up in our container.
 ENV UDEV=1
@@ -53,4 +53,4 @@ RUN git config --global user.email "darin@keever.cc" && \
 # main.py will run when container starts up on the device
 #CMD ["/bin/bash"]
 #CMD ["./code", "tunnel", "--accept-server-license-terms", "--name", "%%BALENA_MACHINE_NAME%%a"]
-CMD ["python3", "markset/main.py"]
+CMD ["python3", "main.py"]

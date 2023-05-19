@@ -30,29 +30,29 @@ race_manager = race_manager.RaceManager(matrix, horn)
 # Index page
 @app.route('/')
 async def index():
-    return await send_from_directory('markset', 'index.html')
+    return await send_from_directory('.', 'index.html')
 @app.route('/static/<path:path>')
 async def send_static(path):
-    return await send_from_directory('markset/static', path)
+    return await send_from_directory('static', path)
 @app.route('/markset.js')
 async def markset():
     # Just send file
-    return await send_from_directory('markset/', 'markset.js')
+    return await send_from_directory('.', 'markset.js')
 # Images
 @app.route('/images/<fn>')
 async def images(fn):
-    return await send_from_directory('markset/static/images', fn)
+    return await send_from_directory('static/images', fn)
 # pre-gzip all large files (>1k) and then send gzipped version
 @app.route('/js/<fn>')
 async def files_js(fn):
-    resp = await send_from_directory('markset/static/js', '{}.gz'.format(fn))
+    resp = await send_from_directory('static/js', '{}.gz'.format(fn))
     resp.headers['Content-Encoding'] = 'gzip'
     return resp
 # The same for css files - e.g.
 # Raw version of bootstrap.min.css is about 146k, compare to gzipped version - 20k
 @app.route('/css/<fn>')
 async def files_css(fn):
-    resp = await send_from_directory('markset/static/css', '{}.gz'.format(fn))
+    resp = await send_from_directory('static/css', '{}.gz'.format(fn))
     resp.headers['Content-Encoding'] = 'gzip'
     return resp
     
@@ -122,7 +122,7 @@ async def race_api(mode):
 
 async def restart_webserver():
     print("Restart")
-    with open("markset/main.py", "a") as a_file:
+    with open("main.py", "a") as a_file:
         a_file.write("#manual restart\n")
 
 @app.route('/api/computer/<command>', methods=['POST'])
