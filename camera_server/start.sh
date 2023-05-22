@@ -2,6 +2,8 @@
 
 udevadm control --reload
 
-libcamera-hello --list-cameras -n -v
+#libcamera-hello --list-cameras -n -v
 
-sleep infinity
+#sleep infinity
+
+python3 ./server.py

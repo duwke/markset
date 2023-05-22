@@ -9,7 +9,7 @@ services:
   camera-server:
     build: ./camera_server
     privileged: true
-    expose:
-      - "8000"
-    labels:
-      io.balena.features.kernel-modules: '1'
+    ports:
+      - "8080:80"
+
+# "i2c_arm=on","spi=on","audio=on"
