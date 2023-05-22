@@ -17,7 +17,7 @@ class FfmpegYoutubeOutput(Output):
         self.output_url = YOUTUBE + youtube_key
 
     def start(self):
-        general_options = ['-loglevel', 'debug']  
+        general_options = ['-loglevel', 'warning']  
         # We have to get FFmpeg to timestamp the video frames as it gets them. This isn't
         # ideal because we're likely to pick up some jitter, but works passably, and I
         # don't have a better alternative right now.
