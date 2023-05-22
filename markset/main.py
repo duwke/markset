@@ -179,5 +179,5 @@ if __name__ == "__main__":
     # get the latest config
     print('git fetch ', subprocess.call('git fetch', shell=True)) 
     print('git checkout ', subprocess.call('git checkout FETCH_HEAD -- config.yaml', shell=True)) 
-    app.run(host='0.0.0.0', debug=True, port=80)
+    app.run(host='0.0.0.0', debug=False, port=80)
     

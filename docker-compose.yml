@@ -4,8 +4,8 @@ services:
     build: ./markset
     restart: always
     privileged: true
-    expose:
-      - "80"
+    ports:
+      - "80:80"
   camera-server:
     build: ./camera_server
     privileged: true
