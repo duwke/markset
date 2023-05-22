@@ -9,16 +9,22 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install dependencies
 RUN apt-get update && \
   apt-get install -yq \
+    libcamera-dev \
+    libcamera-apps-lite \
+    python3 \
+    v4l-utils \
     python3-picamera2 --no-install-recommends \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 RUN git clone https://github.com/duwke/markset.git 
 WORKDIR /usr/src/app/markset/camera_server
-
-
+RUN chmod +x start.sh
+# from https://github.com/balena-io-experimental/libcamera-apps/blob/master/Dockerfile.template
+ENV UDEV=on
 # found at https://github.com/gaborvecsei/YouTube-Live-Stream-Docker/blob/master/youtube_stream_image/code/youtube_stream.py
-CMD ["/bin/bash"]
+CMD ["sh","./start.sh"]
+# CMD ["/bin/bash"]
 # CMD ["python3", "server.py"]
 # CMD ["avconv", "-loglevel", "quiet", "-ar", "44100", "-ac", "2", "-f", "s16le", "-i", "/dev/zero", "-f", "video4linux2", "-s", \
 #                   "640x360", "-r", "10", "-i", "/dev/video0", "-f", "flv", \
