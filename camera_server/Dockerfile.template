@@ -11,6 +11,8 @@ RUN apt-get update && \
   apt-get install -yq \
     libcamera-dev \
     libcamera-apps-lite \
+    vim \
+    ffmpeg \
     python3 \
     v4l-utils \
     python3-picamera2 --no-install-recommends \
@@ -23,6 +25,7 @@ RUN chmod +x start.sh
 # from https://github.com/balena-io-experimental/libcamera-apps/blob/master/Dockerfile.template
 #RUN usermod -a -G video root
 ENV UDEV=on
+
 # found at https://github.com/gaborvecsei/YouTube-Live-Stream-Docker/blob/master/youtube_stream_image/code/youtube_stream.py
 CMD ["sh","./start.sh"]
 # CMD ["/bin/bash"]

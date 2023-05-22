@@ -9,7 +9,5 @@ services:
   camera-server:
     build: ./camera_server
     privileged: true
-    ports:
-      - "8080:80"
-
-# "i2c_arm=on","spi=on","audio=on"
+    expose:
+      - "8000"
