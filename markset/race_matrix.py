@@ -179,7 +179,7 @@ class RaceMatrix:
                 if x >= 8 and x < self.framebuf_.width - 8 and y >= 4 and y < self.framebuf_.height - 4:
                     self.framebuf_.pixel(x, y, 0xFFFFFF)
                 else:
-                    self.framebuf_.pixel(x, y, 0x0000FF)
+                    self.framebuf_.pixel(x, y, 0x000055)
 
     
     ''' x from left, y from top, c = color ffffff '''
