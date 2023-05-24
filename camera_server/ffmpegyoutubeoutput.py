@@ -22,9 +22,9 @@ class FfmpegYoutubeOutput(Output):
         # ideal because we're likely to pick up some jitter, but works passably, and I
         # don't have a better alternative right now.
         video_input = ['-use_wallclock_as_timestamps', '1',
-                       '-thread_queue_size', '32',  # necessary to prevent warnings
+                       '-thread_queue_size', '4096',  # necessary to prevent warnings
                        '-i', '-']
-        video_codec = ['-c:v', 'copy', '-f', 'flv', self.output_url]
+        video_codec = ['-c:v', 'copy', '-preset', 'veryfast', '-b:v', '7000k', '-maxrate', '3000k', '-bufsize', '6000k', '-f', 'flv', self.output_url]
         no_audio = ['-re', '-f', 'lavfi', '-i', 'anullsrc']
 
         command = ['ffmpeg'] + general_options + video_input + no_audio + video_codec 

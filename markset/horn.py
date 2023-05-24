@@ -9,7 +9,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 class Horn:
 
 	def __init__(self, ):
-		mixer.init()
+		mixer.init(buffer=1024)
 		self.walking_interval = None
 		self.is_walking = False
 		self.walking_song = None
