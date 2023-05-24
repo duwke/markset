@@ -174,22 +174,22 @@ class_timeline: # note this is a compressed timeline, this needs to be 3 min
 
 order: 
   - name: 'PORT'
-    color: 0x0000FF
+    color: 0x000055
     music: Thunderstruck.mp3 
     course: 'L'
-    laps: '2'
+    laps: '1'
   - name: 'JAM '
     color: 0x002200
     music: welcome_to_the_jungle.mp3
     course: 'L'
     laps: '1'
   - name: 'SPIN'
-    color: 0xCC0000
+    color: 0x550000
     music: pour_some_sugar_on_me.mp3 
     course: 'L'
     laps: '1'
   - name: 'J-22'
-    color: 0x22114D
+    color: 0x221122
     music: eye_of_the_tiger.mp3 
     course: 'L'
     laps: '1'
