@@ -24,8 +24,8 @@ class FfmpegYoutubeOutput(Output):
         video_input = ['-use_wallclock_as_timestamps', '1',
                        '-thread_queue_size', '4096',  # necessary to prevent warnings
                        '-i', '-']
-        video_codec = ['-c:v', 'copy', '-preset', 'veryfast', '-b:v', '7000k', '-maxrate', '3000k', '-bufsize', '6000k', '-f', 'flv', self.output_url]
-        no_audio = ['-re', '-f', 'lavfi', '-i', 'anullsrc']
+        video_codec = ['-c:v', 'libx264', '-x264-params', 'keyint=120:scenecut=0', '-pix_fmt', 'yuv420p', '-preset', 'ultrafast', '-b:v', '2500k', '-bufsize', '6000k', '-f', 'flv', self.output_url]
+        no_audio = ['-re', '-f', 'lavfi', '-i', 'anullsrc', '-vsync', '0']
 
         command = ['ffmpeg'] + general_options + video_input + no_audio + video_codec 
         # The preexec_fn is a slightly nasty way of ensuring FFmpeg gets stopped if we quit
