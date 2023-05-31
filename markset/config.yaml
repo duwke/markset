@@ -177,22 +177,22 @@ order:
     color: 0x000055
     music: Thunderstruck.mp3 
     course: 'L'
-    laps: '1'
+    laps: '2'
   - name: 'JAM '
     color: 0x002200
     music: welcome_to_the_jungle.mp3
     course: 'L'
-    laps: '1'
+    laps: '2'
   - name: 'SPIN'
     color: 0x550000
     music: pour_some_sugar_on_me.mp3 
     course: 'L'
-    laps: '1'
+    laps: '2'
   - name: 'J-22'
     color: 0x221122
     music: eye_of_the_tiger.mp3 
     course: 'L'
-    laps: '1'
+    laps: '2'
 #   - name: ' J-24'
 #     color: 0x662200
 #     music: sample.wav
