@@ -107,6 +107,8 @@ async def race_api(mode):
                 message = (await request.get_data()).decode('utf-8')
                 logging.debug("got message " + str(message))
                 race_manager.begin_message(message)
+            elif mode == "stop_message":
+                race_manager.stop()
             elif mode == "delay":
                 logging.debug("data " + str(await request.get_data()))
                 delay = (await request.get_data()).decode('utf-8')
@@ -150,6 +152,8 @@ async def music_control_api(command):
         horn.next_song()
     elif command == "stop":
         horn.stop()
+    elif command == "test":
+        horn.test()
     return {'result': 'true'}
 
 async def start_countdown():

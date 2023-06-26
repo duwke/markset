@@ -54,7 +54,7 @@ function update_gpio(data) {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -67,7 +67,7 @@ function poll_led_matrix() {
         // contentType: 'application/json',
         success: update_test_led_matrix,
         error: function (xhr, resp, text) {
-            console.log(method, uri, resp, text);
+            console.log(resp, text);
         }
     })
 }
@@ -116,7 +116,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -132,7 +132,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     })
@@ -148,7 +148,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -164,7 +164,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -180,7 +180,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -197,7 +197,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -214,7 +214,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -230,7 +230,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -247,7 +247,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -264,7 +264,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -281,7 +281,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -297,7 +297,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -313,7 +313,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -329,7 +329,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -345,7 +345,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -361,7 +361,7 @@ function update_buttons() {
         //         console.log(result);
         //     },
         //     error: function (xhr, resp, text) {
-        //         console.log(method, uri, resp, text);
+        //         console.log(resp, text);
         //     }
         // })
         var armService = new ROSLIB.Service({
@@ -393,7 +393,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -409,7 +409,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -417,7 +417,7 @@ function update_buttons() {
         e.preventDefault();
         // Send RESTApi request to change port status
         $.ajax({
-            url: "/api/boat/horn",
+            url: "/api/music/test",
             type: "POST",
             // contentType: 'application/json',
             success: function (result) {
@@ -425,7 +425,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -442,7 +442,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -456,7 +456,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -470,7 +470,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
@@ -484,7 +484,7 @@ function update_buttons() {
                 console.log(result);
             },
             error: function (xhr, resp, text) {
-                console.log(method, uri, resp, text);
+                console.log(resp, text);
             }
         })
     });
