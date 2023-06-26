@@ -1,4 +1,4 @@
-import os
+import os, time
 from pygame import mixer
 import logging
 import random
@@ -19,16 +19,19 @@ class Horn:
 		self.tunes_path = "/usr/src/app/markset/markset/music/"
 		self.tunes = []
 		self.job = None
+		mixer.music.set_volume(1.0)
 
 	def play(self, song):
 		self.stop()
 		mixer.music.load(self.tunes_path + song)
-		mixer.music.set_volume(1.0)
 		mixer.music.play()
 
 	def test(self):
+		self.stop()
 		mixer.music.set_volume(0.1)
 		self.play("sample.wav")
+		time.sleep(5)
+		self.stop()
 		mixer.music.set_volume(1.0)
 
 	def stop(self):
