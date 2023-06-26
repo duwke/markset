@@ -172,6 +172,7 @@ async def start_countdown():
 
 @app.before_serving
 async def startup():
+    horn.test()
     app.add_background_task(start_countdown)
 
 @app.after_serving
