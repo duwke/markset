@@ -184,15 +184,15 @@ order:
     course: 'L'
     laps: '2'
   - name: 'SPIN'
-    color: 0x110000
+    color: 0x060000
     music: pour_some_sugar_on_me.mp3 
     course: 'L'
     laps: '2'
   - name: 'J-22'
-    color: 0x110511
+    color: 0x060206
     music: eye_of_the_tiger.mp3 
     course: 'S'
-    laps: '4'
+    laps: '3'
 #   - name: ' J-24'
 #     color: 0x662200
 #     music: sample.wav
