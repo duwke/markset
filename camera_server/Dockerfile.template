@@ -24,7 +24,7 @@ COPY . camera_server
 WORKDIR /usr/src/app/camera_server
 RUN chmod +x start.sh
 # from https://github.com/balena-io-experimental/libcamera-apps/blob/master/Dockerfile.template
-#RUN usermod -a -G video root
+RUN usermod -a -G video root
 ENV UDEV=on
 
 CMD ["sh","./start.sh"]
