@@ -20,10 +20,20 @@ RUN apt-get update && \
         software-properties-common && \
     rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && \
+    apt-get remove -q -y \
+    python3-blinker && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN /usr/local/bin/pip3 install \
         python-dateutil>=2.8.1 \
-        gpiod adafruit-circuitpython-lis3dh adafruit-circuitpython-neopixel adafruit-blinka RPi.GPIO rpi_ws281x \
-        asyncio quart coloredlogs apscheduler adafruit-circuitpython-framebuf pyyaml  pygame \
+        asyncio quart coloredlogs apscheduler pyyaml  pygame \
+        && \
+    rm -rf ~/.cache/pip 
+
+
+RUN /usr/local/bin/pip3 install \
+        gpiod adafruit-circuitpython-framebuf adafruit-circuitpython-lis3dh adafruit-circuitpython-neopixel RPi.GPIO rpi_ws281x \
         && \
     rm -rf ~/.cache/pip 
 
