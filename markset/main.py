@@ -25,8 +25,6 @@ matrix = race_matrix.RaceMatrix(pixels, pixel_width, pixel_height)
 horn = horn.Horn()
 race_manager = race_manager.RaceManager(matrix, horn)
 
-
-
 # Index page
 @app.route('/')
 async def index():
@@ -160,7 +158,7 @@ async def start_countdown():
     # assume we are starting the race at 6:15.
     now = datetime.datetime.now()
     race_start = datetime.datetime.now()
-    race_start = race_start.replace(hour=23, minute=15, second=0) # UTC
+    race_start = race_start.replace(hour=18, minute=15, second=0) 
     print("now " + str(now))
 
     difference = (race_start     - now)

@@ -26,5 +26,6 @@ RUN chmod +x start.sh
 # from https://github.com/balena-io-experimental/libcamera-apps/blob/master/Dockerfile.template
 RUN usermod -a -G video root
 ENV UDEV=on
+ENV TZ America/Chicago
 
 CMD ["sh","./start.sh"]

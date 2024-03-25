@@ -9,6 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install MAVROS and some other dependencies for later
 RUN apt-get update && \
     apt-get install -q -y \
+        tzdata \
         apt-transport-https \
         curl \
         gnupg2 \
@@ -60,6 +61,8 @@ ENV UDEV=1
 
 RUN git config --global user.email "darin@keever.cc" && \
     git config --global user.name "Darin Keever"
+
+ENV TZ America/Chicago
 
 # main.py will run when container starts up on the device
 #CMD ["/bin/bash"]
