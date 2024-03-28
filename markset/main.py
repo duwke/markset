@@ -160,6 +160,7 @@ async def start_countdown():
     race_start = datetime.datetime.now()
     race_start = race_start.replace(hour=18, minute=15, second=0) 
     print("now " + str(now))
+    print("start " + str(race_start))
 
     difference = (race_start     - now)
     total_seconds = difference.total_seconds()

@@ -49,18 +49,19 @@ WORKDIR /usr/src/app
 
 # This will copy all files in our root to the working  directory in the container
 # COPY . ./
-RUN git clone https://github.com/duwke/markset.git 
+# RUN git clone https://github.com/duwke/markset.git 
 
 WORKDIR /usr/src/app/markset/markset
 
-COPY music ./music
-COPY config.yaml ./config.yaml
+# COPY music ./music
+# COPY config.yaml ./config.yaml
 
 # Enable udevd so that plugged dynamic hardware devices show up in our container.
 ENV UDEV=1
 
 RUN git config --global user.email "darin@keever.cc" && \
-    git config --global user.name "Darin Keever"
+    git config --global user.name "Darin Keever" && \
+    git config --global --add safe.directory /usr/src/app/markset
 
 ENV TZ America/Chicago
 

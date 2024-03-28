@@ -4,6 +4,8 @@ services:
     build: ./markset
     restart: always
     privileged: true
+    volumes:
+      - .:/usr/src/app/markset
     ports:
       - "80:80"
   camera-server:
