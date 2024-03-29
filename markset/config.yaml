@@ -176,8 +176,8 @@ order:
   - name: 'PORT'
     color: 0x000011
     music: Thunderstruck.mp3 
-    course: 'L'
-    laps: '1'
+    course: 'S'
+    laps: '2'
   - name: 'JAM '
     color: 0x000500
     music: welcome_to_the_jungle.mp3
