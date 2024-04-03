@@ -137,7 +137,7 @@ async def computer_control_api(command):
             asyncio.get_event_loop().create_task(restart_webserver())
         elif command == "pull":
             print(os.getcwd())
-            print('git result', subprocess.call('git pull --global --add safe.directory /usr/src/app/markset', shell=True)) #os.system('git pull'))
+            print('git result', subprocess.call('git pull --global --add safe.directory \'*\'', shell=True)) #os.system('git pull'))
         return {'result': 'true'}
 
 

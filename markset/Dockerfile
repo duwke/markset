@@ -49,12 +49,12 @@ WORKDIR /usr/src/app
 
 # This will copy all files in our root to the working  directory in the container
 # COPY . ./
-# RUN git clone https://github.com/duwke/markset.git 
+RUN git clone https://github.com/duwke/markset.git 
 
 WORKDIR /usr/src/app/markset/markset
 
 # COPY music ./music
-# COPY config.yaml ./config.yaml
+COPY config.yaml ./config.yaml
 
 # Enable udevd so that plugged dynamic hardware devices show up in our container.
 ENV UDEV=1
