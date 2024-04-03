@@ -158,7 +158,7 @@ async def start_countdown():
     # assume we are starting the race at 6:15.
     now = datetime.datetime.now()
     race_start = datetime.datetime.now()
-    race_start = race_start.replace(hour=12, minute=15, second=0) #utc
+    race_start = race_start.replace(hour=18, minute=15, second=0) #utc
     print("now " + str(now))
     print("start " + str(race_start))
 
