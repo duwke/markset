@@ -326,7 +326,7 @@ class RaceManager:
         bottom_index = 0
         num_seconds_in = self.show_order_tick_index / self.ticks_per_second_
         if num_seconds_in > pause_seconds:
-            bottom_index = -int((num_seconds_in - pause_seconds) / (pause_seconds + scroll_seconds)) + 1
+            bottom_index = int((num_seconds_in - pause_seconds) / (pause_seconds + scroll_seconds)) + 1
 
         if bottom_index + 1 > len(self.config_['order']):
             logging.debug("order complete")
