@@ -28,7 +28,7 @@ class Horn:
 
 	def test(self):
 		self.stop()
-		mixer.music.set_volume(0.1)
+		mixer.music.set_volume(0.5)
 		self.play("sample.wav")
 		time.sleep(5)
 		self.stop()
