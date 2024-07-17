@@ -1,5 +1,5 @@
 
-race_start: 1600
+race_start: 1800
 prestart_timeline: 
 
   - 1800:
@@ -177,22 +177,22 @@ order:
     color: 0x000011
     music: Thunderstruck.mp3 
     course: 'S'
-    laps: '3'
+    laps: '2'
   - name: 'JAM '
     color: 0x000500
     music: welcome_to_the_jungle.mp3
     course: 'L'
-    laps: '2'
+    laps: '1'
   - name: 'SPIN'
     color: 0x030000
     music: pour_some_sugar_on_me.mp3 
     course: 'L'
-    laps: '2'
+    laps: '1'
   - name: 'J-22'
     color: 0x030103
     music: eye_of_the_tiger.mp3 
-    course: 'J'
-    laps: '5'
+    course: 'L'
+    laps: '1'
 #   - name: ' J-24'
 #     color: 0x662200
 #     music: sample.wav
