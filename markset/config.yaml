@@ -192,7 +192,7 @@ order:
     color: 0x030103
     music: eye_of_the_tiger.mp3 
     course: 'L'
-    laps: '1'
+    laps: '2'
 #   - name: ' J-24'
 #     color: 0x662200
 #     music: sample.wav
