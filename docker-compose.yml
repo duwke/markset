@@ -8,6 +8,6 @@ services:
     #   - .:/usr/src/app/markset
     ports:
       - "80:80"
-  camera-server:
-    build: ./camera_server
-    privileged: true
+  # camera-server:
+  #   build: ./camera_server
+  #   privileged: true
