@@ -172,7 +172,22 @@ async def start_countdown():
 @app.before_serving
 async def startup():
     horn.test()
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        local_ip_address = s.getsockname()[0]
+    finally:
+        s.close()
+
+    ip_message = f"Server IP: http://{local_ip_address}"
+    print(ip_message)
+    race_manager.begin_message(ip_message)
+    
+    # Show IP message for 15 seconds (optional)
+    await asyncio.sleep(15)
+    
     app.add_background_task(start_countdown)
+    
 
 @app.after_serving
 async def shutdown():
