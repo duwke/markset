@@ -177,7 +177,7 @@ order:
     color: 0x000011
     music: Thunderstruck.mp3 
     course: 'S'
-    laps: '2'
+    laps: '3'
   - name: 'JAM '
     color: 0x000500
     music: welcome_to_the_jungle.mp3
@@ -187,13 +187,13 @@ order:
     color: 0x030000
     music: pour_some_sugar_on_me.mp3 
     course: 'L'
-    laps: '1'
-  - name: 'J22 '
-    color: 0x030103
-    music: eye_of_the_tiger.mp3 
-    course: 'L'
-    laps: '1'
+    laps: '2'
+  # - name: 'J22 '
+  #   color: 0x030103
+  #   music: eye_of_the_tiger.mp3 
+  #   course: 'L'
+  #   laps: '1'
   - name: 'CATS'
     color: 0x662200
     course: 'L'
-    laps: '2'
+    laps: '3'
