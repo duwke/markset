@@ -182,7 +182,7 @@ order:
     color: 0x000500
     music: welcome_to_the_jungle.mp3
     course: 'L'
-    laps: '1'
+    laps: '2'
   - name: 'SPIN'
     color: 0x030000
     music: pour_some_sugar_on_me.mp3 
