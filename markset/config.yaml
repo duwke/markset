@@ -177,7 +177,7 @@ order:
     color: 0x000011
     music: Thunderstruck.mp3 
     course: 'S'
-    laps: '1'
+    laps: '2'
   - name: 'JAM '
     color: 0x000500
     music: welcome_to_the_jungle.mp3
