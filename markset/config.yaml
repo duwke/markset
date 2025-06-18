@@ -196,4 +196,4 @@ order:
   - name: 'CATS'
     color: 0x662200
     course: 'L'
-    laps: '2'
+    laps: '3'
